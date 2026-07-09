@@ -54,24 +54,52 @@ jobs:
           cmd /c mklink /J "D:\FreeProjects\Blender\Blender" "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender"
           Get-ChildItem "D:\FreeProjects\Blender\Blender"
 
-      # ---- Pinned old toolchain. These exact versions matter - the build
-      # docs specify them and we don't yet know if newer ones work.
-      - name: Set up JDK 8 (required by AGP 4.1.1)
+      # ---- sdkmanager itself now requires JDK 17+, even though the actual
+      # build (AGP 4.1.1) requires JDK 8. These are two different tools with
+      # two different Java requirements - use JDK 17 ONLY for the package
+      # install step below, then switch to JDK 8 for the build steps later.
+      - name: Set up JDK 17 (required to RUN sdkmanager itself)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '17'
 
       - name: Install pinned Android SDK/NDK/CMake
         shell: pwsh
         run: |
           $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
-          & $sdkManager --install "platforms;android-30"
-          & $sdkManager --install "ndk;21.4.7075529"
-          & $sdkManager --install "cmake;3.10.2.4988404"
-          & $sdkManager --install "cmake;3.18.1"
-          & $sdkManager --install "cmake;3.22.1"
-          & $sdkManager --list_installed
+          $ErrorActionPreference = "Stop"
+
+          function Install-Package($pkg) {
+            & $sdkManager --install $pkg
+            if ($LASTEXITCODE -ne 0) {
+              throw "sdkmanager failed to install $pkg (exit code $LASTEXITCODE)"
+            }
+          }
+
+          Install-Package "platforms;android-30"
+          Install-Package "ndk;21.4.7075529"
+          Install-Package "cmake;3.10.2.4988404"
+          Install-Package "cmake;3.18.1"
+          Install-Package "cmake;3.22.1"
+
+          Write-Host "---- Verifying installed packages ----"
+          $installed = & $sdkManager --list_installed
+          Write-Host $installed
+          foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
+            if ($installed -notmatch [regex]::Escape($required)) {
+              throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
+            }
+          }
+          Write-Host "All pinned packages verified as actually installed."
+
+      # ---- NOW switch to JDK 8 for the actual AGP 4.1.1 / Gradle 6.5 build
+      # steps that come after this in later stages.
+      - name: Set up JDK 8 (required by AGP 4.1.1, for later build steps)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
 
       # ---- Report: write exactly what happened, so failures are legible
       # without digging through the raw Actions log.
