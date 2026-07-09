@@ -10,6 +10,9 @@ on:
         required: false
         default: "manual test run"
 
+permissions:
+  contents: write
+
 jobs:
   setup:
     runs-on: windows-latest
