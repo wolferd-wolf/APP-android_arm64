@@ -1,0 +1,78 @@
+=== Stage 2 run started: 2026-07-10T10:05:25.8078904+00:00 ===
+Trigger note: v2 - explicit gradle output capture
+**********************
+PowerShell transcript start
+Start time: 20260710100651
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\3f5a9a88-b90a-4cc7-bfb6-2214a5815c4e.ps1'
+Process ID: 4416
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+
+
+    Directory: D:\FreeProjects\Blender\Blender
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           7/10/2026 10:05 AM                APP-android_arm64
+d----           7/10/2026 10:06 AM                Blender-android_arm64
+d----           7/10/2026 10:06 AM                lib-android_arm64
+d----           7/10/2026 10:06 AM                Utilities-android_arm64
+**********************
+PowerShell transcript end
+End time: 20260710100651
+**********************
+**********************
+PowerShell transcript start
+Start time: 20260710100652
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\f4956eb3-0772-41e0-9aee-f2db20d04ca8.ps1'
+Process ID: 7964
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+---- Installing platforms;android-30 ----
+
+exit code: 0
+---- Installing ndk;21.4.7075529 ----
+
+exit code: 0
+---- Installing cmake;3.10.2.4988404 ----
+
+exit code: 0
+---- Installing cmake;3.18.1 ----
+
+exit code: 0
+---- Installing cmake;3.22.1 ----
+
+exit code: 0
+All pinned packages verified as actually installed.
+**********************
+PowerShell transcript end
+End time: 20260710100900
+**********************
+
+---- gradlew externalNativeBuildRelease output ----
+
+Error: Could not find or load main class org.gradle.wrapper.GradleWrapperMain
