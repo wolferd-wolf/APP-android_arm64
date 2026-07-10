@@ -111,8 +111,14 @@ jobs:
             Write-Host "---- Verifying installed packages ----"
             $installed = & $sdkManager --list_installed
             Write-Host $installed
+            # IMPORTANT: $installed is an array of lines. -notmatch on an
+            # array filters elements and returns a (non-empty) array, which
+            # is always truthy in an `if` - that caused every check to
+            # false-positive fail regardless of what was actually installed.
+            # Join to one string first so -notmatch returns an actual boolean.
+            $installedText = $installed -join "`n"
             foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
-              if ($installed -notmatch [regex]::Escape($required)) {
+              if ($installedText -notmatch [regex]::Escape($required)) {
                 throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
               }
             }
