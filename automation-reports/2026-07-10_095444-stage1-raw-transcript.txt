@@ -1,0 +1,76 @@
+=== Stage 1 run started: 2026-07-10T09:51:26.8119730+00:00 ===
+Trigger note: v5 - fixed array/-notmatch verification bug
+**********************
+PowerShell transcript start
+Start time: 20260710095250
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\2015e766-e13b-447f-9f46-fbc2ff447ff5.ps1'
+Process ID: 7292
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+
+
+    Directory: D:\FreeProjects\Blender\Blender
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           7/10/2026  9:51 AM                APP-android_arm64
+d----           7/10/2026  9:52 AM                Blender-android_arm64
+d----           7/10/2026  9:52 AM                lib-android_arm64
+d----           7/10/2026  9:52 AM                Utilities-android_arm64
+**********************
+PowerShell transcript end
+End time: 20260710095251
+**********************
+**********************
+PowerShell transcript start
+Start time: 20260710095251
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\92abccbe-bb67-40fa-b1d6-ed31351a4371.ps1'
+Process ID: 10040
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+---- Installing platforms;android-30 ----
+
+exit code: 0
+---- Installing ndk;21.4.7075529 ----
+
+exit code: 0
+---- Installing cmake;3.10.2.4988404 ----
+
+exit code: 0
+---- Installing cmake;3.18.1 ----
+
+exit code: 0
+---- Installing cmake;3.22.1 ----
+
+exit code: 0
+---- Verifying installed packages ----
+Loading package information...                                                   Loading local repository...                                                      [=========                              ] 25% Loading local repository...        [=========                              ] 25% Fetch remote repository...         [=======================================] 100% Fetch remote repository...         Installed packages:   Path                               | Version       | Description                      | Location                             -------                            | -------       | -------                          | -------                              build-tools;34.0.0                 | 34.0.0        | Android SDK Build-Tools 34       | build-tools\34.0.0                   build-tools;35.0.0                 | 35.0.0        | Android SDK Build-Tools 35       | build-tools\35.0.0                   build-tools;35.0.1                 | 35.0.1        | Android SDK Build-Tools 35.0.1   | build-tools\35.0.1                   build-tools;36.0.0                 | 36.0.0        | Android SDK Build-Tools 36       | build-tools\36.0.0                   build-tools;36.1.0                 | 36.1.0        | Android SDK Build-Tools 36.1     | build-tools\36.1.0                   build-tools;37.0.0                 | 37.0.0        | Android SDK Build-Tools 37       | build-tools\37.0.0                   cmake;3.10.2.4988404               | 3.10.2        | CMake 3.10.2.4988404             | cmake\3.10.2.4988404                 cmake;3.18.1                       | 3.18.1        | CMake 3.18.1                     | cmake\3.18.1                         cmake;3.22.1                       | 3.22.1        | CMake 3.22.1                     | cmake\3.22.1                         cmake;3.30.5                       | 3.30.5        | CMake 3.30.5                     | cmake\3.30.5                         cmake;3.31.5                       | 3.31.5        | CMake 3.31.5                     | cmake\3.31.5                         cmake;4.1.2                        | 4.1.2         | CMake 4.1.2                      | cmake\4.1.2                          emulator                           | 36.6.11       | Android Emulator                 | emulator                             extras;android;m2repository        | 47.0.0        | Android Support Repository       | extras\android\m2repository          extras;google;google_play_services | 49            | Google Play services             | extras\google\google_play_services   extras;google;m2repository         | 58            | Google Repository                | extras\google\m2repository           ndk;21.4.7075529                   | 21.4.7075529  | NDK (Side by side) 21.4.7075529  | ndk\21.4.7075529                     ndk;27.3.13750724                  | 27.3.13750724 | NDK (Side by side) 27.3.13750724 | ndk\27.3.13750724                    ndk;28.2.13676358                  | 28.2.13676358 | NDK (Side by side) 28.2.13676358 | ndk\28.2.13676358                    ndk;29.0.14206865                  | 29.0.14206865 | NDK (Side by side) 29.0.14206865 | ndk\29.0.14206865                    platform-tools                     | 37.0.0        | Android SDK Platform-Tools       | platform-tools                       platforms;android-30               | 3             | Android SDK Platform 30          | platforms\android-30                 platforms;android-34               | 3             | Android SDK Platform 34          | platforms\android-34                 platforms;android-34-ext10         | 1             | Android SDK Platform 34-ext10    | platforms\android-34-ext10           platforms;android-34-ext11         | 1             | Android SDK Platform 34-ext11    | platforms\android-34-ext11           platforms;android-34-ext12         | 1             | Android SDK Platform 34-ext12    | platforms\android-34-ext12           platforms;android-34-ext8          | 1             | Android SDK Platform 34-ext8     | platforms\android-34-ext8            platforms;android-35               | 2             | Android SDK Platform 35, rev 2   | platforms\android-35                 platforms;android-35-ext14         | 1             | Android SDK Platform 35-ext14    | platforms\android-35-ext14           platforms;android-35-ext15         | 1             | Android SDK Platform 35-ext15    | platforms\android-35-ext15           platforms;android-36               | 2             | Android SDK Platform 36, rev 2   | platforms\android-36                 platforms;android-36-ext18         | 1             | Android SDK Platform 36-ext18    | platforms\android-36-ext18           platforms;android-36-ext19         | 1             | Android SDK Platform 36-ext19    | platforms\android-36-ext19           platforms;android-36.1             | 1             | Android SDK Platform 36.1        | platforms\android-36.1               platforms;android-37.0             | 2             | Android SDK Platform 37.0        | platforms\android-37.0
+All pinned packages verified as actually installed.
+**********************
+PowerShell transcript end
+End time: 20260710095443
+**********************
