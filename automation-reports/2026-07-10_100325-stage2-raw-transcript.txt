@@ -1,0 +1,102 @@
+=== Stage 2 run started: 2026-07-10T09:59:51.5770636+00:00 ===
+Trigger note: first stage2 attempt
+**********************
+PowerShell transcript start
+Start time: 20260710100121
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\14bdd319-3f4d-47e6-bdd1-9a79a3a7da7d.ps1'
+Process ID: 8568
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+
+
+    Directory: D:\FreeProjects\Blender\Blender
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           7/10/2026 10:00 AM                APP-android_arm64
+d----           7/10/2026 10:00 AM                Blender-android_arm64
+d----           7/10/2026 10:01 AM                lib-android_arm64
+d----           7/10/2026 10:01 AM                Utilities-android_arm64
+**********************
+PowerShell transcript end
+End time: 20260710100122
+**********************
+**********************
+PowerShell transcript start
+Start time: 20260710100123
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\4cd200ee-d842-4282-9744-a27837ffba50.ps1'
+Process ID: 2608
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+---- Installing platforms;android-30 ----
+
+exit code: 0
+---- Installing ndk;21.4.7075529 ----
+
+exit code: 0
+---- Installing cmake;3.10.2.4988404 ----
+
+exit code: 0
+---- Installing cmake;3.18.1 ----
+
+exit code: 0
+---- Installing cmake;3.22.1 ----
+
+exit code: 0
+All pinned packages verified as actually installed.
+**********************
+PowerShell transcript end
+End time: 20260710100322
+**********************
+**********************
+PowerShell transcript start
+Start time: 20260710100323
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\89c7345d-a533-4897-94f3-010bd5847f98.ps1'
+Process ID: 7384
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+---- Running gradlew externalNativeBuildRelease (partial failure expected) ----
+
+gradle exit code: 1
+---- Searching for libmakesdna.a regardless of gradle exit code ----
+libmakesdna.a NOT found anywhere under D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender
+**********************
+PowerShell transcript end
+End time: 20260710100325
+**********************
