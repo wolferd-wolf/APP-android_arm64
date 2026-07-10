@@ -17,18 +17,20 @@ jobs:
   setup:
     runs-on: windows-latest
     steps:
-      # ---- Start capturing EVERYTHING printed for the rest of this job
-      # into a single transcript file. This exists because the CI-driving
-      # agent (Claude) cannot reach GitHub's own log/artifact storage
-      # domains from its sandbox - so the job has to write its own record
-      # of what happened directly into the repo instead.
-      - name: Start full transcript
+      # ---- Shared transcript file. IMPORTANT: each Actions step runs in a
+      # brand new process, so Start-Transcript in one step does NOT persist
+      # into later steps - it only survives within a single step's own
+      # process. So instead of one Start/Stop spanning the whole job, each
+      # step below that matters opens its own Start-Transcript(-Append) /
+      # Stop-Transcript pair, all pointed at the same shared file. The file
+      # itself does persist across steps (it's just a file on disk); only
+      # the transcript *session state* doesn't.
+      - name: Init transcript file
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\transcript" | Out-Null
-          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.log" -Append | Out-Null
-          Write-Host "=== Stage 1 run started: $(Get-Date -Format o) ==="
-          Write-Host "Trigger note: ${{ github.event.inputs.note }}"
+          "=== Stage 1 run started: $(Get-Date -Format o) ===" | Out-File "$env:RUNNER_TEMP\transcript\raw.txt"
+          "Trigger note: ${{ github.event.inputs.note }}" | Out-File "$env:RUNNER_TEMP\transcript\raw.txt" -Append
 
       # ---- Checkout all four repos into the EXACT path the hardcoded
       # CMake references expect. This avoids having to find/replace paths
@@ -64,12 +66,14 @@ jobs:
       - name: Link checkout tree onto D:\
         shell: pwsh
         run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
           New-Item -ItemType Directory -Force -Path "D:\FreeProjects\Blender" | Out-Null
           if (Test-Path "D:\FreeProjects\Blender\Blender") {
             Remove-Item "D:\FreeProjects\Blender\Blender" -Recurse -Force
           }
           cmd /c mklink /J "D:\FreeProjects\Blender\Blender" "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender"
           Get-ChildItem "D:\FreeProjects\Blender\Blender"
+          Stop-Transcript | Out-Null
 
       # ---- sdkmanager itself now requires JDK 17+, even though the actual
       # build (AGP 4.1.1) requires JDK 8. These are two different tools with
@@ -84,33 +88,38 @@ jobs:
       - name: Install pinned Android SDK/NDK/CMake
         shell: pwsh
         run: |
-          $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
-          $ErrorActionPreference = "Stop"
+          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
+          try {
+            $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
+            $ErrorActionPreference = "Stop"
 
-          function Install-Package($pkg) {
-            Write-Host "---- Installing $pkg ----"
-            & $sdkManager --install $pkg
-            Write-Host "exit code: $LASTEXITCODE"
-            if ($LASTEXITCODE -ne 0) {
-              throw "sdkmanager failed to install $pkg (exit code $LASTEXITCODE)"
+            function Install-Package($pkg) {
+              Write-Host "---- Installing $pkg ----"
+              & $sdkManager --install $pkg
+              Write-Host "exit code: $LASTEXITCODE"
+              if ($LASTEXITCODE -ne 0) {
+                throw "sdkmanager failed to install $pkg (exit code $LASTEXITCODE)"
+              }
             }
-          }
 
-          Install-Package "platforms;android-30"
-          Install-Package "ndk;21.4.7075529"
-          Install-Package "cmake;3.10.2.4988404"
-          Install-Package "cmake;3.18.1"
-          Install-Package "cmake;3.22.1"
+            Install-Package "platforms;android-30"
+            Install-Package "ndk;21.4.7075529"
+            Install-Package "cmake;3.10.2.4988404"
+            Install-Package "cmake;3.18.1"
+            Install-Package "cmake;3.22.1"
 
-          Write-Host "---- Verifying installed packages ----"
-          $installed = & $sdkManager --list_installed
-          Write-Host $installed
-          foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
-            if ($installed -notmatch [regex]::Escape($required)) {
-              throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
+            Write-Host "---- Verifying installed packages ----"
+            $installed = & $sdkManager --list_installed
+            Write-Host $installed
+            foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
+              if ($installed -notmatch [regex]::Escape($required)) {
+                throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
+              }
             }
+            Write-Host "All pinned packages verified as actually installed."
+          } finally {
+            Stop-Transcript | Out-Null
           }
-          Write-Host "All pinned packages verified as actually installed."
 
       # ---- NOW switch to JDK 8 for the actual AGP 4.1.1 / Gradle 6.5 build
       # steps that come after this in later stages.
@@ -119,14 +128,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '8'
-
-      # ---- Stop capturing before we start writing files, so the
-      # transcript file itself isn't left open/locked.
-      - name: Stop transcript
-        if: always()
-        shell: pwsh
-        run: |
-          try { Stop-Transcript | Out-Null } catch {}
 
       # ---- Write a short human-readable summary report AND copy the full
       # raw transcript alongside it, then commit both straight back into
@@ -144,12 +145,12 @@ jobs:
           $stamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
           $status = "${{ job.status }}"
 
-          $transcriptSrc = "$env:RUNNER_TEMP\transcript\raw.log"
-          $transcriptDest = "$reportDir\$stamp-stage1-raw-transcript.log"
+          $transcriptSrc = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $transcriptDest = "$reportDir\$stamp-stage1-raw-transcript.txt"
           if (Test-Path $transcriptSrc) {
             Copy-Item $transcriptSrc $transcriptDest
           } else {
-            "transcript file was not found - Start-Transcript may have failed" | Out-File $transcriptDest
+            "transcript file was not found at $transcriptSrc" | Out-File $transcriptDest
           }
 
           $reportFile = "$reportDir\$stamp-stage1-setup.md"
@@ -160,7 +161,7 @@ jobs:
           Job status: $status
           Runner: windows-latest
           Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          Full raw transcript: $stamp-stage1-raw-transcript.log (committed alongside this file)
+          Full raw transcript: $stamp-stage1-raw-transcript.txt (committed alongside this file)
 
           ## Steps executed
           - Checked out APP-android_arm64, Blender-android_arm64 (blender-v3.6-release),
@@ -193,7 +194,7 @@ jobs:
         run: |
           git config user.name "stage1-ci-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add automation-reports/
+          git add -f automation-reports/
           if git diff --cached --quiet; then
             echo "Nothing new to commit"
           else
