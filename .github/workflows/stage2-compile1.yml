@@ -118,13 +118,21 @@ jobs:
       - name: Attempt first makeblender compile pass
         shell: pwsh
         run: |
-          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
           $makeBlenderDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
           Set-Location $makeBlenderDir
+          $gradleLog = "$env:RUNNER_TEMP\transcript\gradle_pass1.txt"
 
           Write-Host "---- Running gradlew externalNativeBuildRelease (partial failure expected) ----"
-          & ".\gradlew.bat" ":app:externalNativeBuildRelease" "--stacktrace"
-          Write-Host "gradle exit code: $LASTEXITCODE"
+          # Start-Transcript does not reliably capture output written directly
+          # by external processes - explicitly redirect and tee it instead.
+          & ".\gradlew.bat" ":app:externalNativeBuildRelease" "--stacktrace" *>&1 | Tee-Object -FilePath $gradleLog
+          $gradleExit = $LASTEXITCODE
+          Write-Host "gradle exit code: $gradleExit"
+
+          # Append gradle's captured output into the shared transcript file
+          # too, so it ends up in one place in the final report.
+          Add-Content -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Value "`n---- gradlew externalNativeBuildRelease output ----`n"
+          Get-Content $gradleLog | Add-Content -Path "$env:RUNNER_TEMP\transcript\raw.txt"
 
           Write-Host "---- Searching for libmakesdna.a regardless of gradle exit code ----"
           $found = Get-ChildItem -Path $makeBlenderDir -Recurse -Filter "libmakesdna.a" -ErrorAction SilentlyContinue
@@ -136,7 +144,6 @@ jobs:
             Write-Host "libmakesdna.a NOT found anywhere under $makeBlenderDir"
             "STAGE2_RESULT=libmakesdna.a NOT found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
           }
-          Stop-Transcript | Out-Null
 
       - name: Write report and full transcript into automation-reports/
         if: always()
