@@ -106,6 +106,22 @@ jobs:
           distribution: temurin
           java-version: '8'
 
+      # ---- gradle-wrapper.jar is missing from Utilities-android_arm64
+      # (excluded by its own inherited .gitignore, same *.jar pattern issue
+      # as before) - it only ever worked because Android Studio silently
+      # regenerates it on project sync. Headless CI has no such auto-heal,
+      # so install the same Gradle version standalone and skip gradlew
+      # entirely.
+      - name: Install standalone Gradle 6.5 (gradle-wrapper.jar is missing from the repo)
+        shell: pwsh
+        run: |
+          $ProgressPreference = "SilentlyContinue"
+          Invoke-WebRequest -Uri "https://services.gradle.org/distributions/gradle-6.5-bin.zip" -OutFile "$env:RUNNER_TEMP\gradle-6.5-bin.zip"
+          Expand-Archive -Path "$env:RUNNER_TEMP\gradle-6.5-bin.zip" -DestinationPath "$env:RUNNER_TEMP\gradle-install"
+          $gradleBin = "$env:RUNNER_TEMP\gradle-install\gradle-6.5\bin"
+          Add-Content -Path $env:GITHUB_PATH -Value $gradleBin
+          & "$gradleBin\gradle.bat" --version
+
       # ---- THE ACTUAL NEW STEP. This is expected to fail partway through -
       # bf_dna needs dna.c/dna_verify.c/dna_type_offsets.h, which normally
       # get produced by running the compiled makesdna tool on a real Android
@@ -122,10 +138,10 @@ jobs:
           Set-Location $makeBlenderDir
           $gradleLog = "$env:RUNNER_TEMP\transcript\gradle_pass1.txt"
 
-          Write-Host "---- Running gradlew externalNativeBuildRelease (partial failure expected) ----"
+          Write-Host "---- Running gradle externalNativeBuildRelease (partial failure expected) ----"
           # Start-Transcript does not reliably capture output written directly
           # by external processes - explicitly redirect and tee it instead.
-          & ".\gradlew.bat" ":app:externalNativeBuildRelease" "--stacktrace" *>&1 | Tee-Object -FilePath $gradleLog
+          & "gradle.bat" ":app:externalNativeBuildRelease" "--stacktrace" *>&1 | Tee-Object -FilePath $gradleLog
           $gradleExit = $LASTEXITCODE
           Write-Host "gradle exit code: $gradleExit"
 
