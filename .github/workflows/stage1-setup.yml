@@ -150,38 +150,36 @@ jobs:
       - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
         shell: pwsh
         run: |
-          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
           $gradlew = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\gradlew.bat"
+          "---- makeblender pass 1 starting: $(Get-Date -Format o) ----" | Out-File $logFile -Append
           Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
-          try {
-            & $gradlew externalNativeBuildRelease --stacktrace
-            Write-Host "gradle exit code: $LASTEXITCODE (non-zero here can be EXPECTED - see note above)"
-          } catch {
-            Write-Host "gradle threw: $_"
-          } finally {
-            Pop-Location
-            Stop-Transcript | Out-Null
-          }
+          # Pipe BOTH stdout and stderr explicitly - Start-Transcript alone
+          # does not reliably capture external process output in CI.
+          & $gradlew externalNativeBuildRelease --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
+          $exitCode = $LASTEXITCODE
+          "gradle exit code: $exitCode (non-zero here can be EXPECTED - see note above)" | Tee-Object -FilePath $logFile -Append
+          Pop-Location
+          exit 0
 
       - name: Check whether libmakesdna.a actually got produced
+        if: always()
         shell: pwsh
         run: |
-          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
-          try {
-            $found = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender" -Recurse -Filter "libmakesdna.a" -ErrorAction SilentlyContinue
-            if ($found) {
-              Write-Host "FOUND libmakesdna.a at:"
-              $found | ForEach-Object { Write-Host "  $($_.FullName)" }
-              "STAGE2_RESULT=found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
-            } else {
-              Write-Host "libmakesdna.a NOT FOUND anywhere under the MakeBlender build tree."
-              Write-Host "Listing what DOES exist under app/.cxx (if anything) for diagnosis:"
-              Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 100 FullName
-              "STAGE2_RESULT=not_found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
-            }
-          } finally {
-            Stop-Transcript | Out-Null
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $found = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender" -Recurse -Filter "libmakesdna.a" -ErrorAction SilentlyContinue
+          if ($found) {
+            "FOUND libmakesdna.a at:" | Tee-Object -FilePath $logFile -Append
+            $found | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
+            "STAGE2_RESULT=found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+          } else {
+            "libmakesdna.a NOT FOUND anywhere under the MakeBlender build tree." | Tee-Object -FilePath $logFile -Append
+            "Listing what DOES exist under app/.cxx (if anything):" | Tee-Object -FilePath $logFile -Append
+            Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx" -Recurse -ErrorAction SilentlyContinue |
+              Select-Object -First 100 -ExpandProperty FullName | Tee-Object -FilePath $logFile -Append
+            "STAGE2_RESULT=not_found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
           }
+          exit 0
       # raw transcript alongside it, then commit both straight back into
       # the repo. This is the part that matters: Claude cannot fetch
       # GitHub's Actions log/artifact storage from its sandbox (those
