@@ -1,0 +1,210 @@
+name: Stage 2 - First makeblender compile pass (expect partial failure)
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Why are you running this (for the report log)"
+        required: false
+        default: "manual test run"
+
+permissions:
+  contents: write
+
+jobs:
+  compile-pass-1:
+    runs-on: windows-latest
+    steps:
+      - name: Init transcript file
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\transcript" | Out-Null
+          "=== Stage 2 run started: $(Get-Date -Format o) ===" | Out-File "$env:RUNNER_TEMP\transcript\raw.txt"
+          "Trigger note: ${{ github.event.inputs.note }}" | Out-File "$env:RUNNER_TEMP\transcript\raw.txt" -Append
+
+      - name: Checkout APP-android_arm64
+        uses: actions/checkout@v4
+        with:
+          path: FreeProjects/Blender/Blender/APP-android_arm64
+          persist-credentials: true
+
+      - name: Checkout Blender-android_arm64 (blender-v3.6-release)
+        uses: actions/checkout@v4
+        with:
+          repository: wolferd-wolf/Blender-android_arm64
+          ref: blender-v3.6-release
+          path: FreeProjects/Blender/Blender/Blender-android_arm64
+
+      - name: Checkout lib-android_arm64
+        uses: actions/checkout@v4
+        with:
+          repository: wolferd-wolf/lib-android_arm64
+          path: FreeProjects/Blender/Blender/lib-android_arm64
+
+      - name: Checkout Utilities-android_arm64
+        uses: actions/checkout@v4
+        with:
+          repository: wolferd-wolf/Utilities-android_arm64
+          path: FreeProjects/Blender/Blender/Utilities-android_arm64
+
+      - name: Link checkout tree onto D:\
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
+          New-Item -ItemType Directory -Force -Path "D:\FreeProjects\Blender" | Out-Null
+          if (Test-Path "D:\FreeProjects\Blender\Blender") {
+            Remove-Item "D:\FreeProjects\Blender\Blender" -Recurse -Force
+          }
+          cmd /c mklink /J "D:\FreeProjects\Blender\Blender" "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender"
+          Get-ChildItem "D:\FreeProjects\Blender\Blender"
+          Stop-Transcript | Out-Null
+
+      - name: Set up JDK 17 (required to RUN sdkmanager itself)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install pinned Android SDK/NDK/CMake
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
+          try {
+            $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
+            $ErrorActionPreference = "Stop"
+
+            function Install-Package($pkg) {
+              Write-Host "---- Installing $pkg ----"
+              & $sdkManager --install $pkg
+              Write-Host "exit code: $LASTEXITCODE"
+              if ($LASTEXITCODE -ne 0) {
+                throw "sdkmanager failed to install $pkg (exit code $LASTEXITCODE)"
+              }
+            }
+
+            Install-Package "platforms;android-30"
+            Install-Package "ndk;21.4.7075529"
+            Install-Package "cmake;3.10.2.4988404"
+            Install-Package "cmake;3.18.1"
+            Install-Package "cmake;3.22.1"
+
+            $installed = & $sdkManager --list_installed
+            $installedText = $installed -join "`n"
+            foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
+              if ($installedText -notmatch [regex]::Escape($required)) {
+                throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
+              }
+            }
+            Write-Host "All pinned packages verified as actually installed."
+          } finally {
+            Stop-Transcript | Out-Null
+          }
+
+      - name: Set up JDK 8 (required by AGP 4.1.1, for the actual build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+
+      # ---- THE ACTUAL NEW STEP. This is expected to fail partway through -
+      # bf_dna needs dna.c/dna_verify.c/dna_type_offsets.h, which normally
+      # get produced by running the compiled makesdna tool on a real Android
+      # device (a later stage). We haven't done that yet, so this WILL fail
+      # on bf_dna. That's fine. What matters is whether libmakesdna.a exists
+      # by the time it fails - so we deliberately do NOT let a nonzero
+      # Gradle exit code fail this step. We check for the actual artifact
+      # instead, and record the artifact search result plus full build
+      # output in the report either way.
+      - name: Attempt first makeblender compile pass
+        shell: pwsh
+        run: |
+          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
+          $makeBlenderDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
+          Set-Location $makeBlenderDir
+
+          Write-Host "---- Running gradlew externalNativeBuildRelease (partial failure expected) ----"
+          & ".\gradlew.bat" ":app:externalNativeBuildRelease" "--stacktrace"
+          Write-Host "gradle exit code: $LASTEXITCODE"
+
+          Write-Host "---- Searching for libmakesdna.a regardless of gradle exit code ----"
+          $found = Get-ChildItem -Path $makeBlenderDir -Recurse -Filter "libmakesdna.a" -ErrorAction SilentlyContinue
+          if ($found) {
+            Write-Host "FOUND libmakesdna.a at:"
+            $found | ForEach-Object { Write-Host " - $($_.FullName)" }
+            "STAGE2_RESULT=libmakesdna.a found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+          } else {
+            Write-Host "libmakesdna.a NOT found anywhere under $makeBlenderDir"
+            "STAGE2_RESULT=libmakesdna.a NOT found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+          }
+          Stop-Transcript | Out-Null
+
+      - name: Write report and full transcript into automation-reports/
+        if: always()
+        shell: pwsh
+        run: |
+          $reportDir = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\APP-android_arm64\automation-reports"
+          New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+          $stamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
+          $status = "${{ job.status }}"
+
+          $stage2Result = "unknown (result file not found - step may have crashed before writing it)"
+          if (Test-Path "$env:RUNNER_TEMP\stage2_result.txt") {
+            $stage2Result = Get-Content "$env:RUNNER_TEMP\stage2_result.txt" -Raw
+          }
+
+          $transcriptSrc = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $transcriptDest = "$reportDir\$stamp-stage2-raw-transcript.txt"
+          if (Test-Path $transcriptSrc) {
+            Copy-Item $transcriptSrc $transcriptDest
+          } else {
+            "transcript file was not found at $transcriptSrc" | Out-File $transcriptDest
+          }
+
+          $reportFile = "$reportDir\$stamp-stage2-compile1.md"
+          @"
+          # Stage 2 report - $stamp
+
+          Trigger note: ${{ github.event.inputs.note }}
+          Job status (Gradle exit code based - a FAILURE here is EXPECTED): $status
+          Actual thing that matters: $stage2Result
+          Runner: windows-latest
+          Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          Full raw transcript: $stamp-stage2-raw-transcript.txt (committed alongside this file)
+
+          ## What this run attempted
+          Ran ``.\gradlew.bat :app:externalNativeBuildRelease`` in
+          Utilities-android_arm64/MakeBlender. Per the compile doc, this
+          build is expected to fail partway through (bf_dna needs
+          dna.c/dna_verify.c/dna_type_offsets.h, which are only produced by
+          running the compiled makesdna tool on a real Android device -
+          a step this run does NOT attempt). So a Gradle failure alone
+          does not mean this run failed - check whether libmakesdna.a
+          was found above.
+
+          ## Not attempted in this run
+          - Compiling or running MakeSDNA on a device/emulator
+          - Anything past the first makeblender pass
+          - Any Blender version bump
+
+          ## Notes / next step
+          If libmakesdna.a was found: next step is compiling and running
+          MakeSDNA (needs an Android emulator in CI - untested territory).
+          If it was NOT found: read the raw transcript for the actual
+          CMake/compiler error, since something failed before reaching
+          makesdna at all, which would be a real, earlier problem.
+          "@ | Out-File -FilePath $reportFile -Encoding utf8
+
+      - name: Commit report back to the repo
+        if: always()
+        working-directory: FreeProjects/Blender/Blender/APP-android_arm64
+        shell: bash
+        run: |
+          git config user.name "stage2-ci-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f automation-reports/
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+          else
+            git commit -m "Stage 2 run report (job status: ${{ job.status }}, run ${{ github.run_id }})"
+            git push
+          fi
