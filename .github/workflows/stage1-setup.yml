@@ -92,10 +92,10 @@ jobs:
           $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
 
           function Install-Package($pkg) {
-            "---- Installing $pkg ----" | Tee-Object -FilePath $logFile -Append
-            & $sdkManager --install $pkg 2>&1 | Tee-Object -FilePath $logFile -Append
+            "---- Installing $pkg ----" | Tee-Object -FilePath $logFile -Append | Out-Null
+            & $sdkManager --install $pkg 2>&1 | Tee-Object -FilePath $logFile -Append | Out-Null
             $code = $LASTEXITCODE
-            "exit code: $code" | Tee-Object -FilePath $logFile -Append
+            "exit code: $code" | Tee-Object -FilePath $logFile -Append | Out-Null
             return $code
           }
 
@@ -159,6 +159,13 @@ jobs:
           "Gradle installed at $gradleBin" | Tee-Object -FilePath $logFile -Append
           Get-ChildItem $gradleBin | Tee-Object -FilePath $logFile -Append
           echo "$gradleBin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Fix missing pnglibconf.h (libpng needs its prebuilt fallback copied in)
+        shell: pwsh
+        run: |
+          $pngDir = "D:\FreeProjects\Blender\Blender\lib-android_arm64\Png\include\libpng-1.6.40"
+          Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
+          Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
       - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
         shell: pwsh
