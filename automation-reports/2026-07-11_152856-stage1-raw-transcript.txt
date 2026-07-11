@@ -1,0 +1,67 @@
+=== Stage 1 run started: 2026-07-11T15:26:35.7225954+00:00 ===
+Trigger note: stage2 retry - standalone gradle 6.5
+**********************
+PowerShell transcript start
+Start time: 20260711152757
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\10549ce5-8ed1-4813-affb-35318c3d3eb7.ps1'
+Process ID: 3816
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+
+
+    Directory: D:\FreeProjects\Blender\Blender
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           7/11/2026  3:26 PM                APP-android_arm64
+d----           7/11/2026  3:27 PM                Blender-android_arm64
+d----           7/11/2026  3:27 PM                lib-android_arm64
+d----           7/11/2026  3:27 PM                Utilities-android_arm64
+**********************
+PowerShell transcript end
+End time: 20260711152758
+**********************
+**********************
+PowerShell transcript start
+Start time: 20260711152759
+Username: runnervmuktm0\runneradmin
+RunAs User: runnervmuktm0\runneradmin
+Configuration Name: 
+Machine: runnervmuktm0 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -command . 'D:\a\_temp\a543b157-b7a4-4d10-ba82-a2ab0ec56136.ps1'
+Process ID: 616
+PSVersion: 7.6.3
+PSEdition: Core
+GitCommitId: 7.6.3
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+---- Installing platforms;android-30 ----
+
+exit code: 0
+---- Installing ndk;21.4.7075529 ----
+
+exit code: 1
+PS>TerminatingError(): "sdkmanager failed to install ndk;21.4.7075529 (exit code 1)"
+**********************
+PowerShell transcript end
+End time: 20260711152854
+**********************
+libmakesdna.a NOT FOUND anywhere under the MakeBlender build tree.
+Listing what DOES exist under app/.cxx (if anything):
