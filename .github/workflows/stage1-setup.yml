@@ -147,16 +147,27 @@ jobs:
         run: echo "already checked out in stage 1 steps above"
         shell: bash
 
+      - name: Install standalone Gradle 6.5 (repo's gradle-wrapper.jar is missing)
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          "---- Installing standalone Gradle 6.5 (wrapper jar missing from repo) ----" | Tee-Object -FilePath $logFile -Append
+          Invoke-WebRequest -Uri "https://services.gradle.org/distributions/gradle-6.5-bin.zip" -OutFile "$env:RUNNER_TEMP\gradle-6.5.zip"
+          Expand-Archive -Path "$env:RUNNER_TEMP\gradle-6.5.zip" -DestinationPath "$env:RUNNER_TEMP\gradle-install"
+          $gradleBin = "$env:RUNNER_TEMP\gradle-install\gradle-6.5\bin"
+          "Gradle installed at $gradleBin" | Tee-Object -FilePath $logFile -Append
+          Get-ChildItem $gradleBin | Tee-Object -FilePath $logFile -Append
+          echo "$gradleBin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
       - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $gradlew = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\gradlew.bat"
           "---- makeblender pass 1 starting: $(Get-Date -Format o) ----" | Out-File $logFile -Append
           Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
-          # Pipe BOTH stdout and stderr explicitly - Start-Transcript alone
-          # does not reliably capture external process output in CI.
-          & $gradlew externalNativeBuildRelease --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
+          # Using standalone gradle.bat (from PATH) since the repo's own
+          # gradle-wrapper.jar is missing - gradlew.bat can't work without it.
+          & gradle.bat externalNativeBuildRelease --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
           $exitCode = $LASTEXITCODE
           "gradle exit code: $exitCode (non-zero here can be EXPECTED - see note above)" | Tee-Object -FilePath $logFile -Append
           Pop-Location
