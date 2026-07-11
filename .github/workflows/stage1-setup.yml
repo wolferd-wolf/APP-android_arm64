@@ -88,44 +88,45 @@ jobs:
       - name: Install pinned Android SDK/NDK/CMake
         shell: pwsh
         run: |
-          Start-Transcript -Path "$env:RUNNER_TEMP\transcript\raw.txt" -Append | Out-Null
-          try {
-            $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
-            $ErrorActionPreference = "Stop"
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $sdkManager = "$env:ANDROID_SDK_ROOT\cmdline-tools\latest\bin\sdkmanager.bat"
 
-            function Install-Package($pkg) {
-              Write-Host "---- Installing $pkg ----"
-              & $sdkManager --install $pkg
-              Write-Host "exit code: $LASTEXITCODE"
-              if ($LASTEXITCODE -ne 0) {
-                throw "sdkmanager failed to install $pkg (exit code $LASTEXITCODE)"
-              }
-            }
-
-            Install-Package "platforms;android-30"
-            Install-Package "ndk;21.4.7075529"
-            Install-Package "cmake;3.10.2.4988404"
-            Install-Package "cmake;3.18.1"
-            Install-Package "cmake;3.22.1"
-
-            Write-Host "---- Verifying installed packages ----"
-            $installed = & $sdkManager --list_installed
-            Write-Host $installed
-            # IMPORTANT: $installed is an array of lines. -notmatch on an
-            # array filters elements and returns a (non-empty) array, which
-            # is always truthy in an `if` - that caused every check to
-            # false-positive fail regardless of what was actually installed.
-            # Join to one string first so -notmatch returns an actual boolean.
-            $installedText = $installed -join "`n"
-            foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
-              if ($installedText -notmatch [regex]::Escape($required)) {
-                throw "VERIFICATION FAILED: $required does not appear in --list_installed output"
-              }
-            }
-            Write-Host "All pinned packages verified as actually installed."
-          } finally {
-            Stop-Transcript | Out-Null
+          function Install-Package($pkg) {
+            "---- Installing $pkg ----" | Tee-Object -FilePath $logFile -Append
+            & $sdkManager --install $pkg 2>&1 | Tee-Object -FilePath $logFile -Append
+            $code = $LASTEXITCODE
+            "exit code: $code" | Tee-Object -FilePath $logFile -Append
+            return $code
           }
+
+          $failures = @()
+          foreach ($pkg in @("platforms;android-30","ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1")) {
+            $code = Install-Package $pkg
+            if ($code -ne 0) {
+              "RETRYING $pkg once after failure" | Tee-Object -FilePath $logFile -Append
+              $code = Install-Package $pkg
+            }
+            if ($code -ne 0) { $failures += $pkg }
+          }
+
+          "---- Verifying installed packages ----" | Tee-Object -FilePath $logFile -Append
+          $installed = & $sdkManager --list_installed 2>&1
+          $installedText = $installed -join "`n"
+          $installedText | Tee-Object -FilePath $logFile -Append
+          foreach ($required in @("ndk;21.4.7075529","cmake;3.10.2.4988404","cmake;3.18.1","cmake;3.22.1","platforms;android-30")) {
+            if ($installedText -notmatch [regex]::Escape($required)) {
+              $failures += "$required (missing from --list_installed)"
+            }
+          }
+
+          if ($failures.Count -gt 0) {
+            "SDK_INSTALL_RESULT=FAILED: $($failures -join ', ')" | Out-File -FilePath "$env:RUNNER_TEMP\sdk_install_result.txt"
+            "SDK INSTALL FAILURES: $($failures -join ', ')" | Tee-Object -FilePath $logFile -Append
+          } else {
+            "SDK_INSTALL_RESULT=all packages verified" | Out-File -FilePath "$env:RUNNER_TEMP\sdk_install_result.txt"
+            "All pinned packages verified as actually installed." | Tee-Object -FilePath $logFile -Append
+          }
+          exit 0
 
       # ---- NOW switch to JDK 8 for the actual AGP 4.1.1 / Gradle 6.5 build
       # steps that come after this in later stages.
@@ -214,6 +215,10 @@ jobs:
             "transcript file was not found at $transcriptSrc" | Out-File $transcriptDest
           }
 
+          $sdkResult = "unknown (sdk_install_result.txt not found)"
+          if (Test-Path "$env:RUNNER_TEMP\sdk_install_result.txt") {
+            $sdkResult = Get-Content "$env:RUNNER_TEMP\sdk_install_result.txt" -Raw
+          }
           $stage2Result = "unknown (stage2_result.txt not found)"
           if (Test-Path "$env:RUNNER_TEMP\stage2_result.txt") {
             $stage2Result = Get-Content "$env:RUNNER_TEMP\stage2_result.txt" -Raw
@@ -228,6 +233,9 @@ jobs:
           Runner: windows-latest
           Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           Full raw transcript: $stamp-stage1-raw-transcript.txt (committed alongside this file)
+
+          ## SDK/NDK/CMake install result
+          $sdkResult
 
           ## Stage 2 result (the actual question this run answers)
           $stage2Result
