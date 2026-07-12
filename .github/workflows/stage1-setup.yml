@@ -167,6 +167,22 @@ jobs:
           Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
           Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
+      - name: Restrict CMake build to just the makesdna target (avoid Cycles/RNA code entirely)
+        shell: pwsh
+        run: |
+          $gradlePath = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
+          $lines = Get-Content $gradlePath
+          $out = New-Object System.Collections.Generic.List[string]
+          foreach ($line in $lines) {
+            $out.Add($line)
+            if ($line -match 'cppFlags\s*""') {
+              $out.Add('                targets "makesdna"')
+            }
+          }
+          $out | Set-Content $gradlePath
+          Write-Host "---- patched build.gradle (targets line added after cppFlags) ----"
+          Get-Content $gradlePath | Select-String "targets|cppFlags"
+
       - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
         shell: pwsh
         run: |
