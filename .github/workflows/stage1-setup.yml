@@ -405,6 +405,8 @@ jobs:
           name: makesdna-debug-apk
 
       - name: Run MakeSDNA on an emulator and pull generated DNA files
+        id: run_emulator
+        continue-on-error: true
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -432,38 +434,45 @@ jobs:
       - name: Write stage 3 report and commit generated files
         if: always()
         run: |
+          set +e
           mkdir -p automation-reports generated-dna
           stamp=$(date -u +"%Y-%m-%d_%H%M%S")
+          : > /tmp/stage3_summary.txt
           for f in dna.c dna_type_offsets.h dna_verify.c; do
             if [ -s "/tmp/dna_output/$f" ]; then
-              cp "/tmp/dna_output/$f" "generated-dna/$f"
-              echo "$f: present, $(wc -l < /tmp/dna_output/$f) lines" >> /tmp/stage3_summary.txt
+              cp "/tmp/dna_output/$f" "generated-dna/$f" 2>>/tmp/stage3_summary.txt
+              echo "$f: present, $(wc -l < /tmp/dna_output/$f 2>/dev/null || echo '?') lines" >> /tmp/stage3_summary.txt
             else
-              echo "$f: MISSING or empty" >> /tmp/stage3_summary.txt
+              echo "$f: MISSING or empty (dir /tmp/dna_output may not exist if emulator step failed early)" >> /tmp/stage3_summary.txt
             fi
           done
           {
             echo "# Stage 3 report - $stamp"
             echo ""
             echo "Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "Emulator step conclusion: ${{ steps.run_emulator.outcome }}"
             echo ""
             echo "## On-device generation result"
-            cat /tmp/stage3_summary.txt
+            cat /tmp/stage3_summary.txt 2>/dev/null || echo "(no summary available)"
+            echo ""
+            echo "## /tmp/dna_output directory listing (if it exists)"
+            ls -la /tmp/dna_output/ 2>&1
             echo ""
             echo "## Notes"
             echo "If all three files are present and non-trivial, this validates"
-            echo "the on-device DNA generation approach end to end. Generated"
-            echo "files are committed to generated-dna/ for inspection. Next step"
-            echo "would be doing the same for MakeSRNA, then the manual CMake"
-            echo "edits + pass 2/3 compile described in the original doc."
+            echo "the on-device DNA generation approach end to end. If the emulator"
+            echo "step itself failed, that's a different, earlier problem - check"
+            echo "this report's presence at all confirms this step now survives"
+            echo "upstream failures instead of aborting silently."
           } > "automation-reports/${stamp}-stage3-makesdna-device.md"
 
           git config user.name "stage1-ci-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -f automation-reports/ generated-dna/
+          git add -f automation-reports/ generated-dna/ 2>&1
           if git diff --cached --quiet; then
             echo "Nothing new to commit"
           else
             git commit -m "Stage 3: on-device MakeSDNA run (run ${{ github.run_id }})"
             git push
           fi
+          exit 0
