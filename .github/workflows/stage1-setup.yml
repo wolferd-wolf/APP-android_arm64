@@ -167,21 +167,28 @@ jobs:
           Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
           Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
-      - name: Restrict CMake build to just the makesdna target (avoid Cycles/RNA code entirely)
+      - name: Restrict CMake build to just the makesdna target (avoid Cycles/RNA code entirely), and add x86_64 ABI for CI emulator use
         shell: pwsh
         run: |
           $gradlePath = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
           $lines = Get-Content $gradlePath
           $out = New-Object System.Collections.Generic.List[string]
           foreach ($line in $lines) {
-            $out.Add($line)
+            if ($line -match 'abiFilters\s*"arm64-v8a"') {
+              # Keep the real arm64-v8a target (for the actual phone) AND add
+              # x86_64 purely so the CI emulator job can run this natively,
+              # without needing ARM translation or root.
+              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
+            } else {
+              $out.Add($line)
+            }
             if ($line -match 'cppFlags\s*""') {
               $out.Add('                targets "makesdna"')
             }
           }
           $out | Set-Content $gradlePath
-          Write-Host "---- patched build.gradle (targets line added after cppFlags) ----"
-          Get-Content $gradlePath | Select-String "targets|cppFlags"
+          Write-Host "---- patched build.gradle ----"
+          Get-Content $gradlePath | Select-String "targets|cppFlags|abiFilters"
 
       - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
         shell: pwsh
@@ -215,6 +222,71 @@ jobs:
             "STAGE2_RESULT=not_found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
           }
           exit 0
+
+      # ================= STAGE 3 (part 1) =================
+      # Build the MakeSDNA app itself. It links directly against the
+      # libmakesdna.a we just built (hardcoded path in its CMakeLists.txt),
+      # so this must run after the step above, in the same job/runner.
+      # Building the DEBUG variant specifically - AGP makes debug builds
+      # debuggable=true automatically, which lets us pull files out of its
+      # private /data/data/ directory via `adb shell run-as` without root.
+      - name: Patch MakeSDNA for multi-ABI build (add x86_64, fix hardcoded arm64-v8a path in its CMakeLists.txt)
+        if: always()
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $sdnaRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
+
+          # 1) add x86_64 ABI alongside the real arm64-v8a target
+          $gradlePath = "$sdnaRoot\app\build.gradle"
+          $lines = Get-Content $gradlePath
+          $out = New-Object System.Collections.Generic.List[string]
+          foreach ($line in $lines) {
+            if ($line -match 'abiFilters\s*"arm64-v8a"') {
+              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
+            } else {
+              $out.Add($line)
+            }
+          }
+          $out | Set-Content $gradlePath
+
+          # 2) MakeSDNA's CMakeLists.txt hardcodes the arm64-v8a path to
+          # libmakesdna.a - replace with ${ANDROID_ABI} so each ABI variant
+          # links against its own matching build of the library.
+          $cmakePath = "$sdnaRoot\app\src\main\cpp\CMakeLists.txt"
+          (Get-Content $cmakePath -Raw) -replace 'release/arm64-v8a/lib', 'release/${ANDROID_ABI}/lib' | Set-Content $cmakePath
+
+          "---- patched MakeSDNA build.gradle + CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
+          Get-Content $gradlePath | Select-String "abiFilters" | Tee-Object -FilePath $logFile -Append
+          Get-Content $cmakePath | Select-String "blenderLibLibDir" | Tee-Object -FilePath $logFile -Append
+
+      - name: Build MakeSDNA app (debug variant)
+        if: always()
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
+          "---- Building MakeSDNA debug APK ----" | Tee-Object -FilePath $logFile -Append
+          & gradle.bat assembleDebug --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
+          "MakeSDNA gradle exit code: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
+          Pop-Location
+          $apk = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
+          if ($apk) {
+            "FOUND APK(s):" | Tee-Object -FilePath $logFile -Append
+            $apk | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
+            Copy-Item $apk[0].FullName "$env:GITHUB_WORKSPACE\makesdna-debug.apk"
+          } else {
+            "NO APK FOUND - build likely failed, check transcript above" | Tee-Object -FilePath $logFile -Append
+          }
+          exit 0
+
+      - name: Upload MakeSDNA APK for the emulator job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: makesdna-debug-apk
+          path: makesdna-debug.apk
+          if-no-files-found: warn
       # raw transcript alongside it, then commit both straight back into
       # the repo. This is the part that matters: Claude cannot fetch
       # GitHub's Actions log/artifact storage from its sandbox (those
@@ -312,3 +384,86 @@ jobs:
         with:
           name: stage1-report
           path: FreeProjects/Blender/Blender/APP-android_arm64/automation-reports/*
+
+  # ================= STAGE 3 (part 2) =================
+  # This job runs on Linux specifically because GitHub's hosted Linux
+  # runners have hardware-accelerated (KVM) Android emulator support, which
+  # windows-latest does not reliably have. It only needs the APK built by
+  # the "setup" job above - not the full repo checkout or D: path trick.
+  run-makesdna-on-device:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout APP-android_arm64 (for committing results)
+        uses: actions/checkout@v4
+
+      - name: Download MakeSDNA APK from setup job
+        uses: actions/download-artifact@v4
+        with:
+          name: makesdna-debug-apk
+
+      - name: Run MakeSDNA on an emulator and pull generated DNA files
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          script: |
+            mkdir -p /tmp/dna_output
+            adb install -r makesdna-debug.apk
+            echo "---- installed, launching MainActivity ----"
+            adb shell am start -n com.epai.makesdna/.MainActivity
+            echo "---- waiting for native code to run ----"
+            sleep 10
+            echo "---- pulling generated files via run-as (app is debuggable, no root needed) ----"
+            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
+            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
+            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
+            echo "---- results ----"
+            ls -la /tmp/dna_output/
+            for f in dna.c dna_type_offsets.h dna_verify.c; do
+              echo "=== $f (first 20 lines) ==="
+              head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
+            done
+
+      - name: Write stage 3 report and commit generated files
+        if: always()
+        run: |
+          mkdir -p automation-reports generated-dna
+          stamp=$(date -u +"%Y-%m-%d_%H%M%S")
+          for f in dna.c dna_type_offsets.h dna_verify.c; do
+            if [ -s "/tmp/dna_output/$f" ]; then
+              cp "/tmp/dna_output/$f" "generated-dna/$f"
+              echo "$f: present, $(wc -l < /tmp/dna_output/$f) lines" >> /tmp/stage3_summary.txt
+            else
+              echo "$f: MISSING or empty" >> /tmp/stage3_summary.txt
+            fi
+          done
+          {
+            echo "# Stage 3 report - $stamp"
+            echo ""
+            echo "Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo ""
+            echo "## On-device generation result"
+            cat /tmp/stage3_summary.txt
+            echo ""
+            echo "## Notes"
+            echo "If all three files are present and non-trivial, this validates"
+            echo "the on-device DNA generation approach end to end. Generated"
+            echo "files are committed to generated-dna/ for inspection. Next step"
+            echo "would be doing the same for MakeSRNA, then the manual CMake"
+            echo "edits + pass 2/3 compile described in the original doc."
+          } > "automation-reports/${stamp}-stage3-makesdna-device.md"
+
+          git config user.name "stage1-ci-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f automation-reports/ generated-dna/
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit"
+          else
+            git commit -m "Stage 3: on-device MakeSDNA run (run ${{ github.run_id }})"
+            git push
+          fi
