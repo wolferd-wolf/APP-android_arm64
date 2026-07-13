@@ -399,6 +399,13 @@ jobs:
       - name: Checkout APP-android_arm64 (for committing results)
         uses: actions/checkout@v4
 
+      - name: Checkout Blender-android_arm64 (only need the DNA_*.h headers as input for makesdna)
+        uses: actions/checkout@v4
+        with:
+          repository: wolferd-wolf/Blender-android_arm64
+          ref: blender-v3.6-release
+          path: blender-src
+
       - name: Download MakeSDNA APK from setup job
         uses: actions/download-artifact@v4
         with:
@@ -416,6 +423,20 @@ jobs:
           script: |
             mkdir -p /tmp/dna_output
             adb install -r makesdna-debug.apk
+            # IMPORTANT: makesdna's main() reads its INPUT (the DNA_*.h type
+            # headers) from a base_directory passed as an argv, hardcoded in
+            # native-lib.cpp to /data/data/com.epai.makesdna/makesdna/. That
+            # folder needs to actually contain those headers before we launch
+            # the app, or generation silently fails on missing input files.
+            # This needs root (adb root) since the app hasn't run yet and the
+            # directory doesn't exist as the app's own writable area yet.
+            adb root
+            sleep 2
+            adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
+            adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
+            adb shell chmod -R 777 /data/data/com.epai.makesdna
+            echo "---- pushed input headers, verifying ----"
+            adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
             echo "---- installed, launching MainActivity ----"
             adb shell am start -n com.epai.makesdna/.MainActivity
             echo "---- waiting for native code to run ----"
