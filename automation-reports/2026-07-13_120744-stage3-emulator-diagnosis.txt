@@ -1,0 +1,5 @@
+=== KVM availability ===
+crw-rw---- 1 root kvm 10, 232 Jul 13 11:56 /dev/kvm
+4
+=== AVD / emulator logs, if any exist ===
+=== dmesg tail (kvm-related) ===
