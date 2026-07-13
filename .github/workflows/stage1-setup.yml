@@ -420,6 +420,10 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_5
+          force-avd-creation: false
+          emulator-boot-timeout: 600
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
           script: |
             mkdir -p /tmp/dna_output
             # Capture EVERYTHING from here on into a log file too, not just
