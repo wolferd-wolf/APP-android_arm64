@@ -422,7 +422,15 @@ jobs:
           profile: pixel_5
           script: |
             mkdir -p /tmp/dna_output
+            # Capture EVERYTHING from here on into a log file too, not just
+            # the Actions console - that console output isn't fetchable by
+            # Claude (blocked domain), so without this the report step can
+            # only say pass/fail with no actual reason why.
+            exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
+            echo "=== emulator script starting: $(date -u -Iseconds) ==="
+            adb devices
             adb install -r makesdna-debug.apk
+            echo "install exit code: $?"
             # IMPORTANT: makesdna's main() reads its INPUT (the DNA_*.h type
             # headers) from a base_directory passed as an argv, hardcoded in
             # native-lib.cpp to /data/data/com.epai.makesdna/makesdna/. That
@@ -431,16 +439,21 @@ jobs:
             # This needs root (adb root) since the app hasn't run yet and the
             # directory doesn't exist as the app's own writable area yet.
             adb root
+            echo "adb root exit code: $?"
             sleep 2
             adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
             adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
+            echo "adb push exit code: $?"
             adb shell chmod -R 777 /data/data/com.epai.makesdna
             echo "---- pushed input headers, verifying ----"
             adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
             echo "---- installed, launching MainActivity ----"
             adb shell am start -n com.epai.makesdna/.MainActivity
+            echo "am start exit code: $?"
             echo "---- waiting for native code to run ----"
             sleep 10
+            echo "---- checking logcat for crashes ----"
+            adb logcat -d -t 300 | grep -i "epai\|makesdna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
             echo "---- pulling generated files via run-as (app is debuggable, no root needed) ----"
             adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
             adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
@@ -457,6 +470,9 @@ jobs:
         run: |
           mkdir -p automation-reports generated-dna
           stamp=$(date -u +"%Y-%m-%d_%H%M%S")
+          if [ -f /tmp/dna_output/emulator_transcript.log ]; then
+            cp /tmp/dna_output/emulator_transcript.log "automation-reports/${stamp}-stage3-emulator-transcript.txt"
+          fi
           : > /tmp/stage3_summary.txt
           for f in dna.c dna_type_offsets.h dna_verify.c; do
             if [ -s "/tmp/dna_output/$f" ]; then
