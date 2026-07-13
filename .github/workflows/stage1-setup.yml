@@ -489,6 +489,12 @@ jobs:
             echo "Nothing new to commit"
           else
             git commit -m "Stage 3: on-device MakeSDNA run (run ${{ github.run_id }})"
-            git push
+            # job1 (setup) already pushed its own commit to main while this
+            # job was running. actions/checkout pins to the trigger commit,
+            # not the live branch head, so this job's base is now stale -
+            # rebase onto whatever job1 pushed before trying to push.
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
             echo "git push exit code: $?"
           fi
