@@ -465,11 +465,29 @@ jobs:
               head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
             done
 
+      - name: Diagnose emulator boot (runs regardless - the emulator seems to be failing before my script even starts)
+        if: always()
+        run: |
+          {
+            echo "=== KVM availability ==="
+            ls -la /dev/kvm 2>&1 || echo "/dev/kvm does not exist"
+            egrep -c '(vmx|svm)' /proc/cpuinfo || echo "no virtualization CPU flags found"
+            echo "=== AVD / emulator logs, if any exist ==="
+            find /home/runner -iname "*.log" -newer /tmp -mmin -30 2>/dev/null | head -20
+            find ~ -ipath "*avd*" -iname "*.log" 2>/dev/null | head -20
+            echo "=== dmesg tail (kvm-related) ==="
+            dmesg 2>&1 | grep -i kvm | tail -30 || echo "dmesg not accessible or no kvm lines"
+          } | tee /tmp/emulator_diagnosis.log
+        continue-on-error: true
+
       - name: Write stage 3 report and commit generated files
         if: always()
         run: |
           mkdir -p automation-reports generated-dna
           stamp=$(date -u +"%Y-%m-%d_%H%M%S")
+          if [ -f /tmp/emulator_diagnosis.log ]; then
+            cp /tmp/emulator_diagnosis.log "automation-reports/${stamp}-stage3-emulator-diagnosis.txt"
+          fi
           if [ -f /tmp/dna_output/emulator_transcript.log ]; then
             cp /tmp/dna_output/emulator_transcript.log "automation-reports/${stamp}-stage3-emulator-transcript.txt"
           fi
