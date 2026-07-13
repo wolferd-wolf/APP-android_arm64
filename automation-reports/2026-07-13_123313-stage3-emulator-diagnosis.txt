@@ -1,0 +1,117 @@
+=== KVM availability ===
+crw-rw---- 1 root kvm 10, 232 Jul 13 12:22 /dev/kvm
+4
+=== disk space ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   63G   82G  44% /
+tmpfs           7.9G   84K  7.9G   1% /dev/shm
+tmpfs           3.2G 1012K  3.2G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+efivarfs        128M   32K  128M   1% /sys/firmware/efi/efivars
+/dev/sda16      881M   64M  756M   8% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs           1.6G   16K  1.6G   1% /run/user/1001
+=== memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       1.4Gi       6.0Gi        46Mi       8.5Gi        14Gi
+Swap:          3.0Gi          0B       3.0Gi
+=== full .android directory tree (unfiltered) ===
+/home/runner/.android
+/home/runner/.android/adbkey
+/home/runner/.android/emu-last-feature-flags.protobuf
+/home/runner/.android/avd
+/home/runner/.android/avd/test.avd
+/home/runner/.android/avd/test.avd/hardware-qemu.ini
+/home/runner/.android/avd/test.avd/emu-launch-params.txt
+/home/runner/.android/avd/test.avd/userdata-qemu.img.qcow2
+/home/runner/.android/avd/test.avd/encryptionkey.img
+/home/runner/.android/avd/test.avd/userdata-qemu.img
+/home/runner/.android/avd/test.avd/cache.img
+/home/runner/.android/avd/test.avd/read-snapshot.txt
+/home/runner/.android/avd/test.avd/userdata.img
+/home/runner/.android/avd/test.avd/tmpAdbCmds
+/home/runner/.android/avd/test.avd/tmpAdbCmds/adbcommandc8093150-4b94-431a-8cd2-f4d2e4ed8b9e
+/home/runner/.android/avd/test.avd/version_num.cache
+/home/runner/.android/avd/test.avd/encryptionkey.img.qcow2
+/home/runner/.android/avd/test.avd/emulator-user.ini
+/home/runner/.android/avd/test.avd/cache.img.qcow2
+/home/runner/.android/avd/test.avd/multiinstance.lock
+/home/runner/.android/avd/test.avd/config.ini
+/home/runner/.android/avd/test.avd/bootcompleted.ini
+/home/runner/.android/avd/test.avd/qemu-version.txt
+/home/runner/.android/avd/test.ini
+/home/runner/.android/adb.5037
+/home/runner/.android/emu-update-last-check.ini
+/home/runner/.android/modem-nv-ram-5554
+/home/runner/.android/userid
+/home/runner/.android
+/home/runner/.android/adbkey
+/home/runner/.android/emu-last-feature-flags.protobuf
+/home/runner/.android/avd
+/home/runner/.android/avd/test.avd
+/home/runner/.android/avd/test.avd/hardware-qemu.ini
+/home/runner/.android/avd/test.avd/emu-launch-params.txt
+/home/runner/.android/avd/test.avd/userdata-qemu.img.qcow2
+/home/runner/.android/avd/test.avd/encryptionkey.img
+/home/runner/.android/avd/test.avd/userdata-qemu.img
+/home/runner/.android/avd/test.avd/cache.img
+/home/runner/.android/avd/test.avd/read-snapshot.txt
+/home/runner/.android/avd/test.avd/userdata.img
+/home/runner/.android/avd/test.avd/tmpAdbCmds
+/home/runner/.android/avd/test.avd/tmpAdbCmds/adbcommandc8093150-4b94-431a-8cd2-f4d2e4ed8b9e
+/home/runner/.android/avd/test.avd/version_num.cache
+/home/runner/.android/avd/test.avd/encryptionkey.img.qcow2
+/home/runner/.android/avd/test.avd/emulator-user.ini
+/home/runner/.android/avd/test.avd/cache.img.qcow2
+/home/runner/.android/avd/test.avd/multiinstance.lock
+/home/runner/.android/avd/test.avd/config.ini
+/home/runner/.android/avd/test.avd/bootcompleted.ini
+/home/runner/.android/avd/test.avd/qemu-version.txt
+/home/runner/.android/avd/test.ini
+/home/runner/.android/adb.5037
+/home/runner/.android/emu-update-last-check.ini
+/home/runner/.android/modem-nv-ram-5554
+/home/runner/.android/userid
+=== ALL log files anywhere under home, no time filter ===
+/home/runner/actions-runner/cached/2.335.1/_diag/Worker_20260713-122237-utc.log
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/172bd722-0599-495f-8f1a-49bf9af8b8a1_3681decf-04b0-5a63-982b-cb1e31b8a524_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/172bd722-0599-495f-8f1a-49bf9af8b8a1_61320660-69e6-4871-b070-bca2293e2c66_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/172bd722-0599-495f-8f1a-49bf9af8b8a1_6dcfa9c6-e912-4fcd-b0fd-d36eb0b46dff_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/Runner_20260713-122235-utc.log
+=== ANDROID_SDK_ROOT / ANDROID_HOME env ===
+ANDROID_SDK_ROOT=/usr/local/lib/android/sdk ANDROID_HOME=/usr/local/lib/android/sdk
+/usr/local/lib/android/sdk
+/usr/local/lib/android/sdk/build-tools
+/usr/local/lib/android/sdk/build-tools/37.0.0
+/usr/local/lib/android/sdk/build-tools/34.0.0
+/usr/local/lib/android/sdk/build-tools/36.1.0
+/usr/local/lib/android/sdk/build-tools/35.0.1
+/usr/local/lib/android/sdk/build-tools/36.0.0
+/usr/local/lib/android/sdk/build-tools/35.0.0
+/usr/local/lib/android/sdk/licenses
+/usr/local/lib/android/sdk/licenses/android-googletv-license
+/usr/local/lib/android/sdk/licenses/android-sdk-preview-license
+/usr/local/lib/android/sdk/licenses/android-googlexr-license
+/usr/local/lib/android/sdk/licenses/google-gdk-license
+/usr/local/lib/android/sdk/licenses/android-sdk-arm-dbt-license
+/usr/local/lib/android/sdk/licenses/mips-android-sysimage-license
+/usr/local/lib/android/sdk/licenses/android-sdk-license
+/usr/local/lib/android/sdk/cmake
+/usr/local/lib/android/sdk/cmake/4.1.2
+/usr/local/lib/android/sdk/cmake/3.31.5
+/usr/local/lib/android/sdk/cmdline-tools
+/usr/local/lib/android/sdk/cmdline-tools/latest
+/usr/local/lib/android/sdk/.temp
+/usr/local/lib/android/sdk/platform-tools
+/usr/local/lib/android/sdk/platform-tools/make_f2fs_casefold
+/usr/local/lib/android/sdk/platform-tools/fastboot
+/usr/local/lib/android/sdk/platform-tools/source.properties
+/usr/local/lib/android/sdk/platform-tools/make_f2fs
+/usr/local/lib/android/sdk/platform-tools/hprof-conv
+/usr/local/lib/android/sdk/platform-tools/etc1tool
+/usr/local/lib/android/sdk/platform-tools/lib64
+=== any emulator or qemu process, running or zombie ===
+runner      3230  0.3  0.0  24220 14068 ?        S    12:33   0:00 /usr/local/lib/android/sdk/emulator/emulator -kill 2668 -sleep 20
+runner      3247  0.0  0.0   6132  1860 ?        S    12:33   0:00 tee /tmp/emulator_diagnosis.log
+=== dmesg tail (kvm/oom related) ===
+dmesg: read kernel buffer failed: Operation not permitted
