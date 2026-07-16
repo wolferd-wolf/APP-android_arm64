@@ -411,63 +411,105 @@ jobs:
         with:
           name: makesdna-debug-apk
 
-      - name: Run MakeSDNA on an emulator and pull generated DNA files
+      - name: Install Android SDK components (emulator, platform-tools, system image)
+        run: |
+          {
+            export ANDROID_HOME="$HOME/android-sdk"
+            mkdir -p "$ANDROID_HOME/cmdline-tools"
+            cd /tmp
+            curl -sS -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip -q cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+            mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+            SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+            yes | $SDKM --licenses > /dev/null 2>&1 || true
+            $SDKM --install "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;x86_64"
+            echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+            echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+            echo "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
+            echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          } | tee /tmp/sdk_install.log
+
+      - name: Ensure KVM is accessible (composite action used to handle this internally)
+        run: |
+          {
+            ls -la /dev/kvm
+            sudo chmod 666 /dev/kvm || echo "chmod failed"
+            ls -la /dev/kvm
+          } | tee /tmp/kvm_setup.log
+
+      - name: Create AVD
+        run: |
+          {
+            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-30;google_apis;x86_64" -d pixel_5 --force
+          } | tee -a /tmp/sdk_install.log
+
+      - name: Boot emulator manually with full output capture (not using the composite action - its internal logs aren't readable by Claude)
+        run: |
+          mkdir -p /tmp/dna_output
+          # Launch directly, redirecting ALL output (this is the part that
+          # was invisible before) to a file on disk that I control and can
+          # read after the fact via the repo commit.
+          nohup emulator -avd test_avd -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -camera-back none -no-snapshot > /tmp/dna_output/emulator_boot.log 2>&1 &
+          echo "emulator launched with PID $!"
+          echo "---- waiting for device to appear (adb wait-for-device) ----"
+          timeout 120 adb wait-for-device
+          echo "adb wait-for-device exit code: $?"
+          echo "---- polling for full boot completion (sys.boot_completed) ----"
+          for i in $(seq 1 60); do
+            booted=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r\n')
+            echo "  poll $i: sys.boot_completed=[$booted]"
+            if [ "$booted" = "1" ]; then
+              echo "Boot completed after ~$((i*5)) seconds"
+              break
+            fi
+            sleep 5
+          done
+          adb devices
+        continue-on-error: true
+
+      - name: Run MakeSDNA on the emulator and pull generated DNA files
         id: run_emulator
         continue-on-error: true
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 30
-          target: google_apis
-          arch: x86_64
-          profile: pixel_5
-          force-avd-creation: false
-          emulator-boot-timeout: 600
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
-          script: |
-            mkdir -p /tmp/dna_output
-            # Capture EVERYTHING from here on into a log file too, not just
-            # the Actions console - that console output isn't fetchable by
-            # Claude (blocked domain), so without this the report step can
-            # only say pass/fail with no actual reason why.
-            exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
-            echo "=== emulator script starting: $(date -u -Iseconds) ==="
-            adb devices
-            timeout 60 adb install -r makesdna-debug.apk
-            echo "install exit code: $?"
-            # IMPORTANT: makesdna's main() reads its INPUT (the DNA_*.h type
-            # headers) from a base_directory passed as an argv, hardcoded in
-            # native-lib.cpp to /data/data/com.epai.makesdna/makesdna/. That
-            # folder needs to actually contain those headers before we launch
-            # the app, or generation silently fails on missing input files.
-            # This needs root (adb root) since the app hasn't run yet and the
-            # directory doesn't exist as the app's own writable area yet.
-            timeout 30 adb root
-            echo "adb root exit code: $?"
-            sleep 2
-            timeout 30 adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
-            timeout 60 adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
-            echo "adb push exit code: $?"
-            adb shell chmod -R 777 /data/data/com.epai.makesdna
-            echo "---- pushed input headers, verifying ----"
-            adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
-            echo "---- installed, launching MainActivity ----"
-            timeout 30 adb shell am start -n com.epai.makesdna/.MainActivity
-            echo "am start exit code: $?"
-            echo "---- waiting for native code to run ----"
-            sleep 10
-            echo "---- checking logcat for crashes ----"
-            adb logcat -d -t 300 | grep -i "epai\|makesdna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
-            echo "---- pulling generated files via run-as (app is debuggable, no root needed) ----"
-            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
-            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
-            adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
-            echo "---- results ----"
-            ls -la /tmp/dna_output/
-            for f in dna.c dna_type_offsets.h dna_verify.c; do
-              echo "=== $f (first 20 lines) ==="
-              head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
-            done
+        run: |
+          mkdir -p /tmp/dna_output
+          exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
+          echo "=== emulator script starting: $(date -u -Iseconds) ==="
+          adb devices
+          timeout 60 adb install -r makesdna-debug.apk
+          echo "install exit code: $?"
+          # IMPORTANT: makesdna's main() reads its INPUT (the DNA_*.h type
+          # headers) from a base_directory passed as an argv, hardcoded in
+          # native-lib.cpp to /data/data/com.epai.makesdna/makesdna/. That
+          # folder needs to actually contain those headers before we launch
+          # the app, or generation silently fails on missing input files.
+          # This needs root (adb root) since the app hasn't run yet and the
+          # directory doesn't exist as the app's own writable area yet.
+          timeout 30 adb root
+          echo "adb root exit code: $?"
+          sleep 2
+          timeout 30 adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
+          timeout 60 adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
+          echo "adb push exit code: $?"
+          adb shell chmod -R 777 /data/data/com.epai.makesdna
+          echo "---- pushed input headers, verifying ----"
+          adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
+          echo "---- installed, launching MainActivity ----"
+          timeout 30 adb shell am start -n com.epai.makesdna/.MainActivity
+          echo "am start exit code: $?"
+          echo "---- waiting for native code to run ----"
+          sleep 10
+          echo "---- checking logcat for crashes ----"
+          adb logcat -d -t 300 | grep -i "epai\|makesdna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
+          echo "---- pulling generated files via run-as (app is debuggable, no root needed) ----"
+          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
+          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
+          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
+          echo "---- results ----"
+          ls -la /tmp/dna_output/
+          for f in dna.c dna_type_offsets.h dna_verify.c; do
+            echo "=== $f (first 20 lines) ==="
+            head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
+          done
 
       - name: Diagnose emulator boot (runs regardless - the emulator seems to be failing before my script even starts)
         if: always()
@@ -500,11 +542,20 @@ jobs:
         run: |
           mkdir -p automation-reports generated-dna
           stamp=$(date -u +"%Y-%m-%d_%H%M%S")
-          if [ -f /tmp/emulator_diagnosis.log ]; then
-            cp /tmp/emulator_diagnosis.log "automation-reports/${stamp}-stage3-emulator-diagnosis.txt"
+          if [ -f /tmp/sdk_install.log ]; then
+            cp /tmp/sdk_install.log "automation-reports/${stamp}-stage3-sdk-install.txt"
+          fi
+          if [ -f /tmp/kvm_setup.log ]; then
+            cp /tmp/kvm_setup.log "automation-reports/${stamp}-stage3-kvm-setup.txt"
+          fi
+          if [ -f /tmp/dna_output/emulator_boot.log ]; then
+            cp /tmp/dna_output/emulator_boot.log "automation-reports/${stamp}-stage3-emulator-boot.txt"
           fi
           if [ -f /tmp/dna_output/emulator_transcript.log ]; then
             cp /tmp/dna_output/emulator_transcript.log "automation-reports/${stamp}-stage3-emulator-transcript.txt"
+          fi
+          if [ -f /tmp/emulator_diagnosis.log ]; then
+            cp /tmp/emulator_diagnosis.log "automation-reports/${stamp}-stage3-emulator-diagnosis.txt"
           fi
           : > /tmp/stage3_summary.txt
           for f in dna.c dna_type_offsets.h dna_verify.c; do
