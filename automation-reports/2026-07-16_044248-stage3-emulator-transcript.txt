@@ -1,0 +1,96 @@
+=== emulator script starting: 2026-07-16T04:42:25+00:00 ===
+List of devices attached
+emulator-5554	device
+
+Performing Streamed Install
+Success
+install exit code: 0
+restarting adbd as root
+adb root exit code: 0
+blender-src/source/blender/makesdna/./: 129 files pushed, 0 skipped. 0.8 MB/s (1277962 bytes in 1.453s)
+adb push exit code: 0
+---- pushed input headers, verifying ----
+CMakeLists.txt
+DNA_ID.h
+DNA_ID_enums.h
+DNA_action_types.h
+DNA_anim_types.h
+---- installed, launching MainActivity ----
+Starting: Intent { cmp=com.epai.makesdna/.MainActivity }
+am start exit code: 0
+---- waiting for native code to run ----
+---- checking logcat for crashes ----
+(nothing matched in logcat)
+---- pulling generated files directly as root (run-as refuses world-writable dirs, which chmod 777 created - so skip run-as entirely since we're already root) ----
+---- results ----
+total 1568
+drwxr-xr-x  2 runner runner    4096 Jul 16 04:42 .
+drwxrwxrwt 16 root   root     12288 Jul 16 04:41 ..
+-rw-r--r--  1 runner runner  509208 Jul 16 04:42 dna.c
+-rw-r--r--  1 runner runner   29981 Jul 16 04:42 dna_type_offsets.h
+-rw-r--r--  1 runner runner 1024413 Jul 16 04:42 dna_verify.c
+-rw-r--r--  1 runner runner    9301 Jul 16 04:42 emulator_boot.log
+-rw-r--r--  1 runner runner     865 Jul 16 04:42 emulator_transcript.log
+=== dna.c (first 20 lines) ===
+extern const unsigned char DNAstr[];
+const unsigned char __attribute__((aligned(4))) DNAstr[] = {
+83, 68, 78, 65, 78, 65, 77, 69, 168, 19, 0, 0, 42, 102, 105, 114, 115, 116, 0, 42, 
+108, 97, 115, 116, 0, 42, 100, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 0, 114, 110, 
+97, 95, 115, 117, 98, 116, 121, 112, 101, 0, 95, 112, 97, 100, 91, 52, 93, 0, 98, 97, 
+115, 101, 0, 42, 100, 101, 102, 97, 117, 108, 116, 95, 97, 114, 114, 97, 121, 0, 100, 101, 
+102, 97, 117, 108, 116, 95, 97, 114, 114, 97, 121, 95, 108, 101, 110, 0, 109, 105, 110, 0, 
+109, 97, 120, 0, 115, 111, 102, 116, 95, 109, 105, 110, 0, 115, 111, 102, 116, 95, 109, 97, 
+120, 0, 115, 116, 101, 112, 0, 100, 101, 102, 97, 117, 108, 116, 95, 118, 97, 108, 117, 101, 
+0, 95, 112, 97, 100, 91, 51, 93, 0, 112, 114, 101, 99, 105, 115, 105, 111, 110, 0, 42, 
+100, 101, 102, 97, 117, 108, 116, 95, 118, 97, 108, 117, 101, 0, 105, 100, 95, 116, 121, 112, 
+101, 0, 95, 112, 97, 100, 91, 54, 93, 0, 42, 112, 111, 105, 110, 116, 101, 114, 0, 103, 
+114, 111, 117, 112, 0, 118, 97, 108, 0, 118, 97, 108, 50, 0, 42, 110, 101, 120, 116, 0, 
+42, 112, 114, 101, 118, 0, 116, 121, 112, 101, 0, 115, 117, 98, 116, 121, 112, 101, 0, 102, 
+108, 97, 103, 0, 110, 97, 109, 101, 91, 54, 52, 93, 0, 95, 112, 97, 100, 48, 91, 52, 
+93, 0, 100, 97, 116, 97, 0, 108, 101, 110, 0, 116, 111, 116, 97, 108, 108, 101, 110, 0, 
+42, 117, 105, 95, 100, 97, 116, 97, 0, 111, 112, 101, 114, 97, 116, 105, 111, 110, 0, 116, 
+97, 103, 0, 95, 112, 97, 100, 48, 91, 50, 93, 0, 42, 115, 117, 98, 105, 116, 101, 109, 
+95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 95, 110, 97, 109, 101, 0, 42, 115, 117, 98, 
+105, 116, 101, 109, 95, 108, 111, 99, 97, 108, 95, 110, 97, 109, 101, 0, 115, 117, 98, 105, 
+=== dna_type_offsets.h (first 20 lines) ===
+#pragma once
+#define SDNA_TYPE_FROM_STRUCT(id) _SDNA_TYPE_##id
+enum {
+	_SDNA_TYPE_DrawDataList = 0,
+	_SDNA_TYPE_IDPropertyUIData = 1,
+	_SDNA_TYPE_IDPropertyUIDataInt = 2,
+	_SDNA_TYPE_IDPropertyUIDataBool = 3,
+	_SDNA_TYPE_IDPropertyUIDataFloat = 4,
+	_SDNA_TYPE_IDPropertyUIDataString = 5,
+	_SDNA_TYPE_IDPropertyUIDataID = 6,
+	_SDNA_TYPE_IDPropertyData = 7,
+	_SDNA_TYPE_IDProperty = 8,
+	_SDNA_TYPE_IDOverrideLibraryPropertyOperation = 9,
+	_SDNA_TYPE_IDOverrideLibraryProperty = 10,
+	_SDNA_TYPE_IDOverrideLibrary = 11,
+	_SDNA_TYPE_ID_Runtime_Remap = 12,
+	_SDNA_TYPE_ID_Runtime = 13,
+	_SDNA_TYPE_ID = 14,
+	_SDNA_TYPE_Library_Runtime = 15,
+	_SDNA_TYPE_Library = 16,
+=== dna_verify.c (first 20 lines) ===
+/* Verify struct sizes and member offsets are as expected by DNA. */
+#include "BLI_assert.h"
+
+#define DNA_DEPRECATED_ALLOW
+#define assert_line_ assert_line_DNA_
+#include "/data/data/com.epai.makesdna/makesdna/DNA_ID.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_ID_enums.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_action_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_anim_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_armature_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_asset_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_boid_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_brush_enums.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_brush_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_cachefile_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_camera_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_cloth_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_collection_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_color_types.h"
+#include "/data/data/com.epai.makesdna/makesdna/DNA_constraint_types.h"
