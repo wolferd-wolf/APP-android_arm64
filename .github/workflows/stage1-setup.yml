@@ -424,6 +424,9 @@ jobs:
             yes | $SDKM --licenses > /dev/null 2>&1 || true
             $SDKM --install "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;x86_64"
             echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+            echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+            echo "ANDROID_AVD_HOME=$HOME/.android/avd" >> "$GITHUB_ENV"
+            mkdir -p "$HOME/.android/avd"
             echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
             echo "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
             echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
@@ -440,7 +443,11 @@ jobs:
       - name: Create AVD
         run: |
           {
+            echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT ANDROID_AVD_HOME=$ANDROID_AVD_HOME"
             echo "no" | avdmanager create avd -n test_avd -k "system-images;android-30;google_apis;x86_64" -d pixel_5 --force
+            echo "---- verifying AVD actually exists now ----"
+            emulator -list-avds
+            ls -la "$ANDROID_AVD_HOME"
           } | tee -a /tmp/sdk_install.log
 
       - name: Boot emulator manually with full output capture (not using the composite action - its internal logs aren't readable by Claude)
