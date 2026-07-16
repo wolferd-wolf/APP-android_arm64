@@ -1,0 +1,5 @@
+INFO         | Android emulator version 36.6.11.0 (build_id 15507667) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+ERROR        | Unknown AVD name [test_avd], use -list-avds to see valid list.
+ERROR        | HOME is defined but there is no file test_avd.ini in $HOME/.android/avd
+ERROR        | (Note: Directories are searched in the order $ANDROID_AVD_HOME, $ANDROID_SDK_HOME/avd and $HOME/.android/avd)

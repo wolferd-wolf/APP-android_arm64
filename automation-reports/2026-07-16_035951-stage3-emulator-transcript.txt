@@ -1,0 +1,4 @@
+=== emulator script starting: 2026-07-16T03:59:50+00:00 ===
+List of devices attached
+
+adb: no devices/emulators found
