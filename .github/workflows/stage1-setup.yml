@@ -167,30 +167,57 @@ jobs:
           Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
           Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
-      - name: Restrict CMake build to just the makesdna target (avoid Cycles/RNA code entirely), and add x86_64 ABI for CI emulator use
+      - name: Restrict CMake build to exactly what MakeSDNA + MakeSRNA need (avoid Cycles-app/RNA-header-consuming code), and add x86_64 ABI for CI emulator use
         shell: pwsh
         run: |
           $gradlePath = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
           $lines = Get-Content $gradlePath
           $out = New-Object System.Collections.Generic.List[string]
+          # Full list of static libs MakeSRNA's own CMakeLists.txt links
+          # against (found by reading it directly) - makesrna.c's generation
+          # logic pulls in real references across most of Blender, unlike
+          # makesdna which only needed bf_dna/bf_dna_blenlib. makesdna is
+          # included here too since MakeSDNA still needs it.
+          $targets = @(
+            "makesdna","makesrna","bf_dna","bf_dna_blenlib",
+            "bf_intern_ghost","bf_gpu","bf_blenfont","bf_blenlib",
+            "bf_nodes_function","bf_functions","bf_python_gpu",
+            "bf_intern_mantaflow","bf_python_ext","bf_avi","bf_ikplugin",
+            "bf_imbuf_openexr","bf_editor_space_userpref",
+            "bf_imbuf_openimageio","bf_intern_opencolorio",
+            "bf_editor_lattice","bf_editor_mask","bf_imbuf_cineon",
+            "bf_intern_memutil","bf_editor_space_script","bf_editor_metaball",
+            "bf_compositor_shaders","bf_gpu_shaders","bf_draw_shaders",
+            "bf_editor_datafiles","bf_intern_opensubdiv","bf_ocio_shaders",
+            "extern_mantaflow","bf_intern_quadriflow","extern_quadriflow",
+            "bf_intern_libmv","bf_intern_audaspace","audaspace-py",
+            "extern_ceres","audaspace","extern_glog","extern_gflags",
+            "cycles_bvh","cycles_scene","cycles_integrator","cycles_session",
+            "cycles_device","bf_intern_rigidbody","extern_lzma",
+            "extern_bullet","extern_clew","extern_minilzo",
+            "bf_intern_iksolver","bf_intern_itasc","bf_intern_eigen",
+            "bf_intern_dualcon","bf_intern_openvdb","bf_intern_locale",
+            "bf_intern_sky","cycles_kernel","cycles_graph","cycles_util",
+            "extern_curve_fit_nd","extern_rangetree","extern_wcwidth",
+            "cycles_subd","bf_intern_libc_compat","bf_intern_clog",
+            "bf_intern_guardedalloc"
+          )
+          $targetsLine = '                targets ' + (($targets | ForEach-Object { '"' + $_ + '"' }) -join ", ")
           foreach ($line in $lines) {
             if ($line -match 'abiFilters\s*"arm64-v8a"') {
-              # Keep the real arm64-v8a target (for the actual phone) AND add
-              # x86_64 purely so the CI emulator job can run this natively,
-              # without needing ARM translation or root.
               $out.Add('                abiFilters "arm64-v8a", "x86_64"')
             } else {
               $out.Add($line)
             }
             if ($line -match 'cppFlags\s*""') {
-              $out.Add('                targets "makesdna"')
+              $out.Add($targetsLine)
             }
           }
           $out | Set-Content $gradlePath
           Write-Host "---- patched build.gradle ----"
           Get-Content $gradlePath | Select-String "targets|cppFlags|abiFilters"
 
-      - name: Attempt makeblender pass 1 (expected to fail after libmakesdna.a)
+      - name: Attempt makeblender pass 1+2 combined (makesdna + everything makesrna needs; expected to fail before reaching full-app RNA-consuming code)
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
@@ -204,22 +231,30 @@ jobs:
           Pop-Location
           exit 0
 
-      - name: Check whether libmakesdna.a actually got produced
+      - name: Check whether libmakesdna.a AND libmakesrna.a (+ spot-check heavy libs) actually got produced
         if: always()
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $found = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender" -Recurse -Filter "libmakesdna.a" -ErrorAction SilentlyContinue
-          if ($found) {
-            "FOUND libmakesdna.a at:" | Tee-Object -FilePath $logFile -Append
-            $found | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
-            "STAGE2_RESULT=found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+          $buildRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
+          $required = @("libmakesdna.a","libmakesrna.a","libcycles_kernel.a","libbf_blenlib.a","libbf_intern_openvdb.a")
+          $missing = @()
+          foreach ($lib in $required) {
+            $found = Get-ChildItem -Path $buildRoot -Recurse -Filter $lib -ErrorAction SilentlyContinue
+            if ($found) {
+              "FOUND $lib at: $($found[0].FullName)" | Tee-Object -FilePath $logFile -Append
+            } else {
+              "MISSING: $lib" | Tee-Object -FilePath $logFile -Append
+              $missing += $lib
+            }
+          }
+          if ($missing.Count -eq 0) {
+            "STAGE2_RESULT=found (all required libs present)" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
           } else {
-            "libmakesdna.a NOT FOUND anywhere under the MakeBlender build tree." | Tee-Object -FilePath $logFile -Append
-            "Listing what DOES exist under app/.cxx (if anything):" | Tee-Object -FilePath $logFile -Append
-            Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx" -Recurse -ErrorAction SilentlyContinue |
-              Select-Object -First 100 -ExpandProperty FullName | Tee-Object -FilePath $logFile -Append
-            "STAGE2_RESULT=not_found" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+            "STAGE2_RESULT=not_found (missing: $($missing -join ', '))" | Out-File -FilePath "$env:RUNNER_TEMP\stage2_result.txt"
+            "Listing what DOES exist under app/.cxx (first 150 entries):" | Tee-Object -FilePath $logFile -Append
+            Get-ChildItem -Path "$buildRoot\app\.cxx" -Recurse -ErrorAction SilentlyContinue |
+              Select-Object -First 150 -ExpandProperty FullName | Tee-Object -FilePath $logFile -Append
           }
           exit 0
 
@@ -286,6 +321,61 @@ jobs:
         with:
           name: makesdna-debug-apk
           path: makesdna-debug.apk
+          if-no-files-found: warn
+
+      # ================= STAGE 3 (part 1b) - same pattern, MakeSRNA =================
+      - name: Patch MakeSRNA for multi-ABI build (add x86_64, fix hardcoded arm64-v8a path in its CMakeLists.txt)
+        if: always()
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $srnaRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
+
+          $gradlePath = "$srnaRoot\app\build.gradle"
+          $lines = Get-Content $gradlePath
+          $out = New-Object System.Collections.Generic.List[string]
+          foreach ($line in $lines) {
+            if ($line -match 'abiFilters\s*"arm64-v8a"') {
+              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
+            } else {
+              $out.Add($line)
+            }
+          }
+          $out | Set-Content $gradlePath
+
+          $cmakePath = "$srnaRoot\app\src\main\cpp\CMakeLists.txt"
+          (Get-Content $cmakePath -Raw) -replace 'release/arm64-v8a/lib', 'release/${ANDROID_ABI}/lib' | Set-Content $cmakePath
+
+          "---- patched MakeSRNA build.gradle + CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
+          Get-Content $gradlePath | Select-String "abiFilters" | Tee-Object -FilePath $logFile -Append
+          Get-Content $cmakePath | Select-String "blenderLibLibDir" | Tee-Object -FilePath $logFile -Append
+
+      - name: Build MakeSRNA app (debug variant)
+        if: always()
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
+          "---- Building MakeSRNA debug APK ----" | Tee-Object -FilePath $logFile -Append
+          & gradle.bat assembleDebug --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
+          "MakeSRNA gradle exit code: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
+          Pop-Location
+          $apk = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
+          if ($apk) {
+            "FOUND APK(s):" | Tee-Object -FilePath $logFile -Append
+            $apk | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
+            Copy-Item $apk[0].FullName "$env:GITHUB_WORKSPACE\makesrna-debug.apk"
+          } else {
+            "NO APK FOUND - build likely failed, check transcript above" | Tee-Object -FilePath $logFile -Append
+          }
+          exit 0
+
+      - name: Upload MakeSRNA APK for the emulator job
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: makesrna-debug-apk
+          path: makesrna-debug.apk
           if-no-files-found: warn
       # raw transcript alongside it, then commit both straight back into
       # the repo. This is the part that matters: Claude cannot fetch
@@ -411,6 +501,11 @@ jobs:
         with:
           name: makesdna-debug-apk
 
+      - name: Download MakeSRNA APK from setup job
+        uses: actions/download-artifact@v4
+        with:
+          name: makesrna-debug-apk
+
       - name: Install Android SDK components (emulator, platform-tools, system image)
         run: |
           {
@@ -517,6 +612,35 @@ jobs:
             head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
           done
 
+      - name: Run MakeSRNA on the emulator and pull generated RNA files
+        id: run_srna_emulator
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/dna_output/rna_output
+          exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
+          echo "=== MakeSRNA starting: $(date -u -Iseconds) ==="
+          adb devices
+          timeout 60 adb install -r makesrna-debug.apk
+          echo "install exit code: $?"
+          # Unlike makesdna, makesrna's main()/rna_preprocess() only takes
+          # OUTPUT directory args - no input headers need pushing, since all
+          # of RNA's actual definition source is compiled directly into the
+          # static lib at build time on the Windows runner, not read at
+          # runtime. So: just launch and pull.
+          timeout 30 adb shell am start -n com.epai.makesrna/.MainActivity
+          echo "am start exit code: $?"
+          echo "---- waiting for native code to run (this does a LOT more work than makesdna did) ----"
+          sleep 20
+          echo "---- checking logcat for crashes ----"
+          adb logcat -d -t 300 | grep -i "epai\|makesrna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
+          echo "---- pulling entire output directory (many files expected, exact names unknown ahead of time) ----"
+          adb pull /data/data/com.epai.makesrna/ /tmp/dna_output/rna_output/ || echo "PULL_FAILED: whole directory pull"
+          echo "---- results ----"
+          find /tmp/dna_output/rna_output -type f | wc -l
+          find /tmp/dna_output/rna_output -type f | head -30
+          echo "---- specifically checking for RNA_blender_cpp.h (the file that blocked the full blender build earlier) ----"
+          find /tmp/dna_output/rna_output -iname "RNA_blender_cpp.h" -exec echo "FOUND: {}" \; -exec wc -l {} \;
+
       - name: Diagnose emulator boot (runs regardless - the emulator seems to be failing before my script even starts)
         if: always()
         run: |
@@ -572,14 +696,37 @@ jobs:
               echo "$f: MISSING or empty" >> /tmp/stage3_summary.txt
             fi
           done
+
+          : > /tmp/stage3_rna_summary.txt
+          mkdir -p generated-rna
+          if [ -d /tmp/dna_output/rna_output ]; then
+            rna_file_count=$(find /tmp/dna_output/rna_output -type f | wc -l)
+            echo "RNA output files pulled: $rna_file_count" >> /tmp/stage3_rna_summary.txt
+            find /tmp/dna_output/rna_output -type f | head -50 >> /tmp/stage3_rna_summary.txt
+            if [ "$rna_file_count" -gt 0 ]; then
+              cp -r /tmp/dna_output/rna_output/. generated-rna/
+            fi
+            rna_cpp=$(find /tmp/dna_output/rna_output -iname "RNA_blender_cpp.h" | head -1)
+            if [ -n "$rna_cpp" ]; then
+              echo "RNA_blender_cpp.h: FOUND at $rna_cpp ($(wc -l < "$rna_cpp") lines)" >> /tmp/stage3_rna_summary.txt
+            else
+              echo "RNA_blender_cpp.h: NOT FOUND" >> /tmp/stage3_rna_summary.txt
+            fi
+          else
+            echo "rna_output directory does not exist - pull likely failed entirely" >> /tmp/stage3_rna_summary.txt
+          fi
           {
             echo "# Stage 3 report - $stamp"
             echo ""
             echo "Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            echo "Emulator step conclusion: ${{ steps.run_emulator.outcome }}"
+            echo "MakeSDNA emulator step conclusion: ${{ steps.run_emulator.outcome }}"
+            echo "MakeSRNA emulator step conclusion: ${{ steps.run_srna_emulator.outcome }}"
             echo ""
-            echo "## On-device generation result"
+            echo "## On-device DNA generation result"
             cat /tmp/stage3_summary.txt
+            echo ""
+            echo "## On-device RNA generation result"
+            cat /tmp/stage3_rna_summary.txt
             echo ""
             echo "## /tmp/dna_output directory listing"
             ls -la /tmp/dna_output/ 2>&1 || echo "directory does not exist"
@@ -589,7 +736,7 @@ jobs:
 
           git config user.name "stage1-ci-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -f automation-reports/ generated-dna/
+          git add -f automation-reports/ generated-dna/ generated-rna/
           git status
           if git diff --cached --quiet; then
             echo "Nothing new to commit"
