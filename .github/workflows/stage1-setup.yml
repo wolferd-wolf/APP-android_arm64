@@ -221,14 +221,31 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          "---- makeblender pass 1 starting: $(Get-Date -Format o) ----" | Out-File $logFile -Append
+          $buildLogFile = "$env:RUNNER_TEMP\transcript\makeblender_build.txt"
+          "---- makeblender pass 1+2 starting: $(Get-Date -Format o) ----" | Out-File $logFile -Append
+          "---- disk space before build ----" | Out-File $logFile -Append
+          Get-PSDrive -PSProvider FileSystem | Format-Table -AutoSize | Out-String | Out-File $logFile -Append
           Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
-          # Using standalone gradle.bat (from PATH) since the repo's own
-          # gradle-wrapper.jar is missing - gradlew.bat can't work without it.
-          & gradle.bat externalNativeBuildRelease --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
+          # This build is MUCH bigger than the makesdna-only one (~70 libs
+          # including Cycles kernel). Redirect gradle's output using cmd's
+          # own > redirection directly to a dedicated file, rather than
+          # piping through PowerShell's Tee-Object - that pipeline buffers
+          # output as PowerShell objects, which may not hold up under a
+          # much larger volume than the previous makesdna-only build had.
+          cmd /c "gradle.bat externalNativeBuildRelease --stacktrace > `"$buildLogFile`" 2>&1"
           $exitCode = $LASTEXITCODE
-          "gradle exit code: $exitCode (non-zero here can be EXPECTED - see note above)" | Tee-Object -FilePath $logFile -Append
           Pop-Location
+          "---- disk space after build ----" | Out-File $logFile -Append
+          Get-PSDrive -PSProvider FileSystem | Format-Table -AutoSize | Out-String | Out-File $logFile -Append
+          "gradle exit code: $exitCode (non-zero here can be EXPECTED - see note above)" | Out-File $logFile -Append
+          if (Test-Path $buildLogFile) {
+            $lineCount = (Get-Content $buildLogFile | Measure-Object -Line).Lines
+            "build log captured: $lineCount lines at $buildLogFile" | Out-File $logFile -Append
+            "---- last 200 lines of build output ----" | Out-File $logFile -Append
+            Get-Content $buildLogFile -Tail 200 | Out-File $logFile -Append
+          } else {
+            "NO build log file was created at all - cmd redirection itself may have failed" | Out-File $logFile -Append
+          }
           exit 0
 
       - name: Check whether libmakesdna.a AND libmakesrna.a (+ spot-check heavy libs) actually got produced
@@ -396,8 +413,14 @@ jobs:
           $transcriptDest = "$reportDir\$stamp-stage1-raw-transcript.txt"
           if (Test-Path $transcriptSrc) {
             Copy-Item $transcriptSrc $transcriptDest
+            "transcript file size: $((Get-Item $transcriptSrc).Length) bytes" | Out-File "$reportDir\$stamp-transcript-meta.txt"
           } else {
             "transcript file was not found at $transcriptSrc" | Out-File $transcriptDest
+          }
+
+          $buildLogSrc = "$env:RUNNER_TEMP\transcript\makeblender_build.txt"
+          if (Test-Path $buildLogSrc) {
+            Copy-Item $buildLogSrc "$reportDir\$stamp-stage1-makeblender-full-build.txt"
           }
 
           $sdkResult = "unknown (sdk_install_result.txt not found)"
