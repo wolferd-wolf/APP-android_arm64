@@ -497,7 +497,6 @@ jobs:
           timeout 30 adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
           timeout 60 adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
           echo "adb push exit code: $?"
-          adb shell chmod -R 777 /data/data/com.epai.makesdna
           echo "---- pushed input headers, verifying ----"
           adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
           echo "---- installed, launching MainActivity ----"
@@ -507,10 +506,10 @@ jobs:
           sleep 10
           echo "---- checking logcat for crashes ----"
           adb logcat -d -t 300 | grep -i "epai\|makesdna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
-          echo "---- pulling generated files via run-as (app is debuggable, no root needed) ----"
-          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
-          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
-          adb exec-out run-as com.epai.makesdna cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
+          echo "---- pulling generated files directly as root (run-as refuses world-writable dirs, which chmod 777 created - so skip run-as entirely since we're already root) ----"
+          adb exec-out cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
+          adb exec-out cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
+          adb exec-out cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
           echo "---- results ----"
           ls -la /tmp/dna_output/
           for f in dna.c dna_type_offsets.h dna_verify.c; do
