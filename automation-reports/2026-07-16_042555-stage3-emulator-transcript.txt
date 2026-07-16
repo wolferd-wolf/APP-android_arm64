@@ -1,0 +1,44 @@
+=== emulator script starting: 2026-07-16T04:25:36+00:00 ===
+List of devices attached
+emulator-5554	device
+
+Performing Streamed Install
+Success
+install exit code: 0
+restarting adbd as root
+adb root exit code: 0
+blender-src/source/blender/makesdna/./: 129 files pushed, 0 skipped. 3.8 MB/s (1277962 bytes in 0.319s)
+adb push exit code: 0
+---- pushed input headers, verifying ----
+CMakeLists.txt
+DNA_ID.h
+DNA_ID_enums.h
+DNA_action_types.h
+DNA_anim_types.h
+---- installed, launching MainActivity ----
+Starting: Intent { cmp=com.epai.makesdna/.MainActivity }
+am start exit code: 0
+---- waiting for native code to run ----
+---- checking logcat for crashes ----
+07-16 04:25:53.236   497  1508 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.packageinstaller/com.android.packageinstaller.PackageInstalledReceiver
+07-16 04:25:53.236   497   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.gms/.games.chimera.GamesSystemBroadcastReceiverProxy
+07-16 04:25:53.236   497   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.gms/.gass.chimera.PackageChangeBroadcastReceiver
+07-16 04:25:53.236   497   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.gms/.chimera.GmsIntentOperationService$PersistentTrustedReceiver
+07-16 04:25:53.236   497   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.googlequicksearchbox/com.google.android.apps.gsa.googlequicksearchbox.GelStubAppWatcher
+07-16 04:25:53.236   497   537 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:com.epai.makesdna flg=0x4000010 (has extras) } to com.google.android.ims/.receivers.RcsAutoStartReceiver
+---- pulling generated files via run-as (app is debuggable, no root needed) ----
+---- results ----
+total 40
+drwxr-xr-x  2 runner runner  4096 Jul 16 04:25 .
+drwxrwxrwt 16 root   root   12288 Jul 16 04:25 ..
+-rw-r--r--  1 runner runner    77 Jul 16 04:25 dna.c
+-rw-r--r--  1 runner runner    77 Jul 16 04:25 dna_type_offsets.h
+-rw-r--r--  1 runner runner    77 Jul 16 04:25 dna_verify.c
+-rw-r--r--  1 runner runner  8127 Jul 16 04:25 emulator_boot.log
+-rw-r--r--  1 runner runner  2454 Jul 16 04:25 emulator_transcript.log
+=== dna.c (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
+=== dna_type_offsets.h (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
+=== dna_verify.c (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
