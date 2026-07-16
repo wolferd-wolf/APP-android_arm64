@@ -1,0 +1,42 @@
+=== emulator script starting: 2026-07-16T04:13:34+00:00 ===
+List of devices attached
+emulator-5554	device
+
+Performing Streamed Install
+Success
+install exit code: 0
+restarting adbd as root
+adb root exit code: 0
+blender-src/source/blender/makesdna/./: 129 files pushed, 0 skipped. 1.4 MB/s (1277962 bytes in 0.884s)
+adb push exit code: 0
+---- pushed input headers, verifying ----
+CMakeLists.txt
+DNA_ID.h
+DNA_ID_enums.h
+DNA_action_types.h
+DNA_anim_types.h
+---- installed, launching MainActivity ----
+Starting: Intent { cmp=com.epai.makesdna/.MainActivity }
+am start exit code: 0
+---- waiting for native code to run ----
+---- checking logcat for crashes ----
+07-16 04:13:57.271   496   552 I AppsFilter: interaction: PackageSetting{ac42c32 com.epai.makesdna/10167} -> PackageSetting{f971fc4 com.google.android.googlequicksearchbox/10123} BLOCKED
+07-16 04:13:57.271   496   552 I AppsFilter: interaction: PackageSetting{ac42c32 com.epai.makesdna/10167} -> PackageSetting{589e2e com.google.android.apps.messaging/10146} BLOCKED
+07-16 04:13:57.271   496   552 I AppsFilter: interaction: PackageSetting{ac42c32 com.epai.makesdna/10167} -> PackageSetting{53763e1 com.google.android.gm/10132} BLOCKED
+07-16 04:13:57.271   496   552 I AppsFilter: interaction: PackageSetting{ac42c32 com.epai.makesdna/10167} -> PackageSetting{8f02346 com.google.android.partnersetup/10116} BLOCKED
+---- pulling generated files via run-as (app is debuggable, no root needed) ----
+---- results ----
+total 44
+drwxr-xr-x  2 runner runner  4096 Jul 16 04:13 .
+drwxrwxrwt 16 root   root   12288 Jul 16 04:13 ..
+-rw-r--r--  1 runner runner    77 Jul 16 04:13 dna.c
+-rw-r--r--  1 runner runner    77 Jul 16 04:13 dna_type_offsets.h
+-rw-r--r--  1 runner runner    77 Jul 16 04:13 dna_verify.c
+-rw-r--r--  1 runner runner  8628 Jul 16 04:13 emulator_boot.log
+-rw-r--r--  1 runner runner  1469 Jul 16 04:13 emulator_transcript.log
+=== dna.c (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
+=== dna_type_offsets.h (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
+=== dna_verify.c (first 20 lines) ===
+run-as: /data/user/0/com.epai.makesdna readable or writable by others: 40777
