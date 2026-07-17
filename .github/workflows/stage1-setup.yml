@@ -79,6 +79,13 @@ jobs:
       # build (AGP 4.1.1) requires JDK 8. These are two different tools with
       # two different Java requirements - use JDK 17 ONLY for the package
       # install step below, then switch to JDK 8 for the build steps later.
+      - name: Exclude build directory from Windows Defender (known cause of files vanishing mid-build on GH Windows runners)
+        shell: pwsh
+        run: |
+          Add-MpPreference -ExclusionPath "D:\FreeProjects" -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionPath "$env:GITHUB_WORKSPACE" -ErrorAction SilentlyContinue
+          Get-MpPreference | Select-Object -ExpandProperty ExclusionPath
+
       - name: Set up JDK 17 (required to RUN sdkmanager itself)
         uses: actions/setup-java@v4
         with:
