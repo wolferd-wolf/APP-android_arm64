@@ -177,7 +177,7 @@ jobs:
       - name: Restrict CMake build to exactly what MakeSDNA + MakeSRNA need (avoid Cycles-app/RNA-header-consuming code), and add x86_64 ABI for CI emulator use
         shell: pwsh
         run: |
-          $gradlePath = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
+          $gradlePath = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
           $lines = Get-Content $gradlePath
           $out = New-Object System.Collections.Generic.List[string]
           # Full list of static libs MakeSRNA's own CMakeLists.txt links
@@ -232,7 +232,7 @@ jobs:
           "---- makeblender pass 1+2 starting: $(Get-Date -Format o) ----" | Out-File $logFile -Append
           "---- disk space before build ----" | Out-File $logFile -Append
           Get-PSDrive -PSProvider FileSystem | Format-Table -AutoSize | Out-String | Out-File $logFile -Append
-          Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
+          Push-Location "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
           # This build is MUCH bigger than the makesdna-only one (~70 libs
           # including Cycles kernel). Redirect gradle's output using cmd's
           # own > redirection directly to a dedicated file, rather than
@@ -260,7 +260,7 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $buildRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
+          $buildRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
           $required = @("libmakesdna.a","libmakesrna.a","libcycles_kernel.a","libbf_blenlib.a","libbf_intern_openvdb.a")
           $missing = @()
           foreach ($lib in $required) {
@@ -294,7 +294,7 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $sdnaRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
+          $sdnaRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
 
           # 1) add x86_64 ABI alongside the real arm64-v8a target
           $gradlePath = "$sdnaRoot\app\build.gradle"
@@ -324,12 +324,12 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
+          Push-Location "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
           "---- Building MakeSDNA debug APK ----" | Tee-Object -FilePath $logFile -Append
           & gradle.bat assembleDebug --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
           "MakeSDNA gradle exit code: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
           Pop-Location
-          $apk = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
+          $apk = Get-ChildItem -Path "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
           if ($apk) {
             "FOUND APK(s):" | Tee-Object -FilePath $logFile -Append
             $apk | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
@@ -353,7 +353,7 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $srnaRoot = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
+          $srnaRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
 
           $gradlePath = "$srnaRoot\app\build.gradle"
           $lines = Get-Content $gradlePath
@@ -379,12 +379,12 @@ jobs:
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          Push-Location "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
+          Push-Location "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
           "---- Building MakeSRNA debug APK ----" | Tee-Object -FilePath $logFile -Append
           & gradle.bat assembleDebug --stacktrace 2>&1 | Tee-Object -FilePath $logFile -Append
           "MakeSRNA gradle exit code: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
           Pop-Location
-          $apk = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
+          $apk = Get-ChildItem -Path "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA" -Recurse -Filter "*.apk" -ErrorAction SilentlyContinue
           if ($apk) {
             "FOUND APK(s):" | Tee-Object -FilePath $logFile -Append
             $apk | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
@@ -411,7 +411,7 @@ jobs:
         if: always()
         shell: pwsh
         run: |
-          $reportDir = "$env:GITHUB_WORKSPACE\FreeProjects\Blender\Blender\APP-android_arm64\automation-reports"
+          $reportDir = "D:\FreeProjects\Blender\Blender\APP-android_arm64\automation-reports"
           New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
           $stamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
           $status = "${{ job.status }}"
