@@ -255,6 +255,45 @@ jobs:
           }
           exit 0
 
+      - name: Replace broken ARM64 datatoc/datatoc_icon/msgfmt with prebuilt Windows-native versions, then retry build
+        shell: pwsh
+        run: |
+          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
+          $buildLogFile2 = "$env:RUNNER_TEMP\transcript\makeblender_build_retry.txt"
+          $binDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a\bin"
+          $utilDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\Utilities"
+
+          "---- host-tool fix: this Android port's CMake setup builds these" | Out-File $logFile -Append
+          "tools with the Android NDK cross-compiler, producing ARM64 binaries" | Out-File $logFile -Append
+          "Windows can't execute directly. Overwriting with the maintainer's" | Out-File $logFile -Append
+          "own prebuilt Windows-native versions from Utilities-android_arm64/Utilities/." | Out-File $logFile -Append
+          New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+          foreach ($exe in @("datatoc.exe", "datatoc_icon.exe", "msgfmt.exe")) {
+            $src = Join-Path $utilDir $exe
+            if (Test-Path $src) {
+              Copy-Item $src (Join-Path $binDir $exe) -Force
+              # Touch with a far-future timestamp so ninja considers it
+              # newer than its source and doesn't try to rebuild it.
+              (Get-Item (Join-Path $binDir $exe)).LastWriteTime = (Get-Date).AddYears(5)
+              "copied and touched: $exe" | Out-File $logFile -Append
+            } else {
+              "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
+            }
+          }
+
+          Push-Location "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
+          cmd /c "gradle.bat externalNativeBuildRelease --stacktrace > `"$buildLogFile2`" 2>&1"
+          $exitCode = $LASTEXITCODE
+          Pop-Location
+          "retry gradle exit code: $exitCode" | Out-File $logFile -Append
+          if (Test-Path $buildLogFile2) {
+            $lineCount = (Get-Content $buildLogFile2 | Measure-Object -Line).Lines
+            "retry build log: $lineCount lines" | Out-File $logFile -Append
+            "---- last 200 lines of retry build output ----" | Out-File $logFile -Append
+            Get-Content $buildLogFile2 -Tail 200 | Out-File $logFile -Append
+          }
+          exit 0
+
       - name: Check whether libmakesdna.a AND libmakesrna.a (+ spot-check heavy libs) actually got produced
         if: always()
         shell: pwsh
@@ -428,6 +467,10 @@ jobs:
           $buildLogSrc = "$env:RUNNER_TEMP\transcript\makeblender_build.txt"
           if (Test-Path $buildLogSrc) {
             Copy-Item $buildLogSrc "$reportDir\$stamp-stage1-makeblender-full-build.txt"
+          }
+          $buildLogSrc2 = "$env:RUNNER_TEMP\transcript\makeblender_build_retry.txt"
+          if (Test-Path $buildLogSrc2) {
+            Copy-Item $buildLogSrc2 "$reportDir\$stamp-stage1-makeblender-retry-build.txt"
           }
 
           $sdkResult = "unknown (sdk_install_result.txt not found)"
