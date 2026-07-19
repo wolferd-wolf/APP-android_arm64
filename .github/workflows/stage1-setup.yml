@@ -174,28 +174,6 @@ jobs:
           Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
           Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
-      - name: Seed already-generated DNA files (many of the 68 targets need dna_type_offsets.h transitively via blenloader, and can't get it without this)
-        shell: pwsh
-        run: |
-          $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
-          $srcDir = "D:\FreeProjects\Blender\Blender\APP-android_arm64\generated-dna"
-          # This is where Blender's own CMakeLists.txt (makesdna/intern)
-          # expects these three files: CMAKE_CURRENT_BINARY_DIR, which for
-          # this build resolves under .cxx/cmake/release/<abi>/source/...
-          foreach ($abi in @("arm64-v8a", "x86_64")) {
-            $destDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\$abi\source\blender\makesdna\intern"
-            New-Item -ItemType Directory -Force -Path $destDir | Out-Null
-            foreach ($f in @("dna.c", "dna_type_offsets.h", "dna_verify.c")) {
-              $src = Join-Path $srcDir $f
-              if (Test-Path $src) {
-                Copy-Item $src (Join-Path $destDir $f) -Force
-                "seeded $f into $destDir" | Out-File $logFile -Append
-              } else {
-                "MISSING from generated-dna/: $f (was an earlier successful emulator run ever committed?)" | Out-File $logFile -Append
-              }
-            }
-          }
-
       - name: Restrict CMake build to exactly what MakeSDNA + MakeSRNA need (avoid Cycles-app/RNA-header-consuming code), and add x86_64 ABI for CI emulator use
         shell: pwsh
         run: |
@@ -297,6 +275,26 @@ jobs:
               "copied: $exe" | Out-File $logFile -Append
             } else {
               "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
+            }
+          }
+
+          # Seed the already-generated DNA files HERE, right before the
+          # retry build, not earlier - CMake's initial configure (which
+          # happens during the FIRST gradle invocation above) appears to
+          # wipe/recreate the .cxx tree, which destroyed an earlier attempt
+          # to seed these files before that first build ever ran.
+          $srcDir = "D:\FreeProjects\Blender\Blender\APP-android_arm64\generated-dna"
+          foreach ($abi in @("arm64-v8a", "x86_64")) {
+            $destDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\$abi\source\blender\makesdna\intern"
+            New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+            foreach ($f in @("dna.c", "dna_type_offsets.h", "dna_verify.c")) {
+              $src = Join-Path $srcDir $f
+              if (Test-Path $src) {
+                Copy-Item $src (Join-Path $destDir $f) -Force
+                "seeded $f into $destDir (post-configure, pre-retry)" | Out-File $logFile -Append
+              } else {
+                "MISSING from generated-dna/: $f" | Out-File $logFile -Append
+              }
             }
           }
 
