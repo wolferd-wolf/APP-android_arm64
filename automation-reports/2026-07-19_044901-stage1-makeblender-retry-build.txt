@@ -1,0 +1,511 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateJsonModelRelease
+
+> Task :app:externalNativeBuildRelease
+Build multiple targets bf_imbuf_openimageio_arm64-v8a audaspace_arm64-v8a bf_intern_dualcon_arm64-v8a bf_intern_openvdb_arm64-v8a bf_avi_arm64-v8a bf_intern_libmv_arm64-v8a cycles_bvh_arm64-v8a bf_gpu_arm64-v8a bf_intern_mantaflow_arm64-v8a extern_quadriflow_arm64-v8a bf_intern_itasc_arm64-v8a bf_editor_datafiles_arm64-v8a bf_editor_lattice_arm64-v8a bf_intern_opencolorio_arm64-v8a extern_curve_fit_nd_arm64-v8a extern_wcwidth_arm64-v8a bf_intern_sky_arm64-v8a bf_python_gpu_arm64-v8a bf_intern_quadriflow_arm64-v8a bf_imbuf_cineon_arm64-v8a bf_intern_memutil_arm64-v8a bf_editor_space_userpref_arm64-v8a bf_dna_blenlib_arm64-v8a bf_draw_shaders_arm64-v8a bf_gpu_shaders_arm64-v8a bf_intern_audaspace_arm64-v8a extern_minilzo_arm64-v8a extern_lzma_arm64-v8a bf_intern_libc_compat_arm64-v8a cycles_graph_arm64-v8a extern_glog_arm64-v8a cycles_util_arm64-v8a bf_editor_metaball_arm64-v8a bf_imbuf_openexr_arm64-v8a extern_mantaflow_arm64-v8a cycles_session_arm64-v8a extern_bullet_arm64-v8a bf_intern_eigen_arm64-v8a bf_functions_arm64-v8a bf_ocio_shaders_arm64-v8a cycles_integrator_arm64-v8a extern_rangetree_arm64-v8a bf_editor_mask_arm64-v8a makesdna_arm64-v8a bf_nodes_function_arm64-v8a cycles_kernel_arm64-v8a bf_intern_rigidbody_arm64-v8a bf_blenlib_arm64-v8a cycles_device_arm64-v8a extern_ceres_arm64-v8a bf_intern_clog_arm64-v8a bf_compositor_shaders_arm64-v8a cycles_subd_arm64-v8a bf_intern_ghost_arm64-v8a bf_intern_locale_arm64-v8a bf_intern_opensubdiv_arm64-v8a cycles_scene_arm64-v8a makesrna_arm64-v8a bf_intern_guardedalloc_arm64-v8a bf_python_ext_arm64-v8a bf_ikplugin_arm64-v8a extern_clew_arm64-v8a extern_gflags_arm64-v8a bf_intern_iksolver_arm64-v8a bf_editor_space_script_arm64-v8a bf_blenfont_arm64-v8a audaspace-py_arm64-v8a bf_dna_arm64-v8a
+ninja: Entering directory `D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a'
+[1/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/editmball_undo.c.o
+[2/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_edit.c.o
+[3/1922] Generating gpu_shader_display_transform_frag.glsl.c
+[4/1922] Generating gpu_shader_display_transform_vert.glsl.c
+[5/1922] Generating internal/evaluator/shaders/glsl_compute_kernel.glsl.c
+[6/1922] Generating ocio_shader_shared.hh.c
+[7/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/editlattice_undo.c.o
+[8/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/lattice_ops.c.o
+[9/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology_compare.cc.o
+[10/1922] Linking CXX static library lib\libextern_mantaflow.a
+[11/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/patch_map.cc.o
+[12/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_cache_impl.cc.o
+[13/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_draw.cc.o
+[14/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/ocio_shader_shared.hh.c.o
+[15/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_vert.glsl.c.o
+[16/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_frag.glsl.c.o
+[17/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/type_convert.cc.o
+[18/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/gl_compute_evaluator.cc.o
+[19/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_capi.cc.o
+[20/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology.cc.o
+[21/1922] Linking C static library lib\libbf_ocio_shaders.a
+[22/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_cpu.cc.o
+[23/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/opensubdiv_capi.cc.o
+[24/1922] Building C object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/shaders/glsl_compute_kernel.glsl.c.o
+[25/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/util.cc.o
+[26/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output.cc.o
+[27/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_impl.cc.o
+[28/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl_compare.cc.o
+[29/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl.cc.o
+[30/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_gpu.cc.o
+[31/1922] Linking C static library lib\libbf_editor_lattice.a
+[32/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_editaction.cc.o
+[33/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_capi.cc.o
+[34/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_edit.cc.o
+[35/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_factory.cc.o
+[36/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_add.cc.o
+[37/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_ops.cc.o
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:665:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:890:9: warning: declaration does not declare anything [-Wmissing-declarations]
+        ATTR_FALLTHROUGH;
+        ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:1191:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+3 warnings generated.
+[38/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_shapekey.cc.o
+[39/1922] Linking CXX static library lib\libbf_intern_opensubdiv.a
+[40/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_ops.c.o
+[41/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_query.cc.o
+[42/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_ops.c.o
+[43/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_edit.c.o
+[44/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o
+FAILED: source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_PYTHON -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/gpu -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/python -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o -MF source\blender\editors\space_script\CMakeFiles\bf_editor_space_script.dir\space_script.c.o.d -o source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c:27:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[45/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o
+FAILED: source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o -MF source\blender\editors\space_userpref\CMakeFiles\bf_editor_space_userpref.dir\space_userpref.c.o.d -o source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c:30:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[46/1922] Linking C static library lib\libbf_editor_metaball.a
+[47/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/userpref_ops.c.o
+[48/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_select.cc.o
+[49/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_relationships.cc.o
+ninja: build stopped: subcommand failed.
+
+> Task :app:externalNativeBuildRelease FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:externalNativeBuildRelease'.
+> Build command failed.
+  Error while executing process C:\Android\android-sdk\cmake\3.10.2.4988404\bin\ninja.exe with arguments {-C D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a audaspace audaspace-py bf_avi bf_blenfont bf_blenlib bf_compositor_shaders bf_dna bf_dna_blenlib bf_draw_shaders bf_editor_datafiles bf_editor_lattice bf_editor_mask bf_editor_metaball bf_editor_space_script bf_editor_space_userpref bf_functions bf_gpu bf_gpu_shaders bf_ikplugin bf_imbuf_cineon bf_imbuf_openexr bf_imbuf_openimageio bf_intern_audaspace bf_intern_clog bf_intern_dualcon bf_intern_eigen bf_intern_ghost bf_intern_guardedalloc bf_intern_iksolver bf_intern_itasc bf_intern_libc_compat bf_intern_libmv bf_intern_locale bf_intern_mantaflow bf_intern_memutil bf_intern_opencolorio bf_intern_opensubdiv bf_intern_openvdb bf_intern_quadriflow bf_intern_rigidbody bf_intern_sky bf_nodes_function bf_ocio_shaders bf_python_ext bf_python_gpu cycles_bvh cycles_device cycles_graph cycles_integrator cycles_kernel cycles_scene cycles_session cycles_subd cycles_util extern_bullet extern_ceres extern_clew extern_curve_fit_nd extern_gflags extern_glog extern_lzma extern_mantaflow extern_minilzo extern_quadriflow extern_rangetree extern_wcwidth makesdna makesrna}
+  ninja: Entering directory `D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a'
+  [1/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/editmball_undo.c.o
+  [2/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_edit.c.o
+  [3/1922] Generating gpu_shader_display_transform_frag.glsl.c
+  [4/1922] Generating gpu_shader_display_transform_vert.glsl.c
+  [5/1922] Generating internal/evaluator/shaders/glsl_compute_kernel.glsl.c
+  [6/1922] Generating ocio_shader_shared.hh.c
+  [7/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/editlattice_undo.c.o
+  [8/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/lattice_ops.c.o
+  [9/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology_compare.cc.o
+  [10/1922] Linking CXX static library lib\libextern_mantaflow.a
+  [11/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/patch_map.cc.o
+  [12/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_cache_impl.cc.o
+  [13/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_draw.cc.o
+  [14/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/ocio_shader_shared.hh.c.o
+  [15/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_vert.glsl.c.o
+  [16/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_frag.glsl.c.o
+  [17/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/type_convert.cc.o
+  [18/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/gl_compute_evaluator.cc.o
+  [19/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_capi.cc.o
+  [20/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology.cc.o
+  [21/1922] Linking C static library lib\libbf_ocio_shaders.a
+  [22/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_cpu.cc.o
+  [23/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/opensubdiv_capi.cc.o
+  [24/1922] Building C object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/shaders/glsl_compute_kernel.glsl.c.o
+  [25/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/util.cc.o
+  [26/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output.cc.o
+  [27/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_impl.cc.o
+  [28/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl_compare.cc.o
+  [29/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl.cc.o
+  [30/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_gpu.cc.o
+  [31/1922] Linking C static library lib\libbf_editor_lattice.a
+  [32/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_editaction.cc.o
+  [33/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_capi.cc.o
+  [34/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_edit.cc.o
+  [35/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_factory.cc.o
+  [36/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_add.cc.o
+  [37/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_ops.cc.o
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:665:7: warning: declaration does not declare anything [-Wmissing-declarations]
+        ATTR_FALLTHROUGH; /* update CV position */
+        ^
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+  #    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                               ^
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:890:9: warning: declaration does not declare anything [-Wmissing-declarations]
+          ATTR_FALLTHROUGH;
+          ^
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+  #    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                               ^
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:1191:7: warning: declaration does not declare anything [-Wmissing-declarations]
+        ATTR_FALLTHROUGH; /* update CV position */
+        ^
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+  #    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                               ^
+  3 warnings generated.
+  [38/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_shapekey.cc.o
+  [39/1922] Linking CXX static library lib\libbf_intern_opensubdiv.a
+  [40/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_ops.c.o
+  [41/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_query.cc.o
+  [42/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_ops.c.o
+  [43/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_edit.c.o
+  [44/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o
+  FAILED: source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o 
+  C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_PYTHON -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/gpu -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/python -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o -MF source\blender\editors\space_script\CMakeFiles\bf_editor_space_script.dir\space_script.c.o.d -o source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c
+  In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c:27:
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+  #include "dna_type_offsets.h"
+           ^~~~~~~~~~~~~~~~~~~~
+  1 error generated.
+  [45/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o
+  FAILED: source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o 
+  C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o -MF source\blender\editors\space_userpref\CMakeFiles\bf_editor_space_userpref.dir\space_userpref.c.o.d -o source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c
+  In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c:30:
+  D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+  #include "dna_type_offsets.h"
+           ^~~~~~~~~~~~~~~~~~~~
+  1 error generated.
+  [46/1922] Linking C static library lib\libbf_editor_metaball.a
+  [47/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/userpref_ops.c.o
+  [48/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_select.cc.o
+  [49/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_relationships.cc.o
+  ninja: build stopped: subcommand failed.
+  
+
+
+* Try:
+Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:externalNativeBuildRelease'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:207)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:263)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:205)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:186)
+	at org.gradle.api.internal.tasks.execution.CleanupStaleOutputsExecuter.execute(CleanupStaleOutputsExecuter.java:114)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:62)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:56)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$CallableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:409)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$CallableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:399)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(DefaultBuildOperationExecutor.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:242)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:150)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:94)
+	at org.gradle.internal.operations.DelegatingBuildOperationExecutor.call(DelegatingBuildOperationExecutor.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:41)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:356)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:343)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:336)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:322)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.lambda$run$0(DefaultPlanExecutor.java:127)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:191)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.executeNextNode(DefaultPlanExecutor.java:182)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:124)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)
+	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)
+Caused by: org.gradle.internal.UncheckedException: Build command failed.
+Error while executing process C:\Android\android-sdk\cmake\3.10.2.4988404\bin\ninja.exe with arguments {-C D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a audaspace audaspace-py bf_avi bf_blenfont bf_blenlib bf_compositor_shaders bf_dna bf_dna_blenlib bf_draw_shaders bf_editor_datafiles bf_editor_lattice bf_editor_mask bf_editor_metaball bf_editor_space_script bf_editor_space_userpref bf_functions bf_gpu bf_gpu_shaders bf_ikplugin bf_imbuf_cineon bf_imbuf_openexr bf_imbuf_openimageio bf_intern_audaspace bf_intern_clog bf_intern_dualcon bf_intern_eigen bf_intern_ghost bf_intern_guardedalloc bf_intern_iksolver bf_intern_itasc bf_intern_libc_compat bf_intern_libmv bf_intern_locale bf_intern_mantaflow bf_intern_memutil bf_intern_opencolorio bf_intern_opensubdiv bf_intern_openvdb bf_intern_quadriflow bf_intern_rigidbody bf_intern_sky bf_nodes_function bf_ocio_shaders bf_python_ext bf_python_gpu cycles_bvh cycles_device cycles_graph cycles_integrator cycles_kernel cycles_scene cycles_session cycles_subd cycles_util extern_bullet extern_ceres extern_clew extern_curve_fit_nd extern_gflags extern_glog extern_lzma extern_mantaflow extern_minilzo extern_quadriflow extern_rangetree extern_wcwidth makesdna makesrna}
+ninja: Entering directory `D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a'
+[1/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/editmball_undo.c.o
+[2/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_edit.c.o
+[3/1922] Generating gpu_shader_display_transform_frag.glsl.c
+[4/1922] Generating gpu_shader_display_transform_vert.glsl.c
+[5/1922] Generating internal/evaluator/shaders/glsl_compute_kernel.glsl.c
+[6/1922] Generating ocio_shader_shared.hh.c
+[7/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/editlattice_undo.c.o
+[8/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/lattice_ops.c.o
+[9/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology_compare.cc.o
+[10/1922] Linking CXX static library lib\libextern_mantaflow.a
+[11/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/patch_map.cc.o
+[12/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_cache_impl.cc.o
+[13/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_draw.cc.o
+[14/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/ocio_shader_shared.hh.c.o
+[15/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_vert.glsl.c.o
+[16/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_frag.glsl.c.o
+[17/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/type_convert.cc.o
+[18/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/gl_compute_evaluator.cc.o
+[19/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_capi.cc.o
+[20/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology.cc.o
+[21/1922] Linking C static library lib\libbf_ocio_shaders.a
+[22/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_cpu.cc.o
+[23/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/opensubdiv_capi.cc.o
+[24/1922] Building C object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/shaders/glsl_compute_kernel.glsl.c.o
+[25/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/util.cc.o
+[26/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output.cc.o
+[27/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_impl.cc.o
+[28/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl_compare.cc.o
+[29/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl.cc.o
+[30/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_gpu.cc.o
+[31/1922] Linking C static library lib\libbf_editor_lattice.a
+[32/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_editaction.cc.o
+[33/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_capi.cc.o
+[34/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_edit.cc.o
+[35/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_factory.cc.o
+[36/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_add.cc.o
+[37/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_ops.cc.o
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:665:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:890:9: warning: declaration does not declare anything [-Wmissing-declarations]
+        ATTR_FALLTHROUGH;
+        ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:1191:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+3 warnings generated.
+[38/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_shapekey.cc.o
+[39/1922] Linking CXX static library lib\libbf_intern_opensubdiv.a
+[40/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_ops.c.o
+[41/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_query.cc.o
+[42/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_ops.c.o
+[43/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_edit.c.o
+[44/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o
+FAILED: source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_PYTHON -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/gpu -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/python -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o -MF source\blender\editors\space_script\CMakeFiles\bf_editor_space_script.dir\space_script.c.o.d -o source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c:27:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[45/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o
+FAILED: source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o -MF source\blender\editors\space_userpref\CMakeFiles\bf_editor_space_userpref.dir\space_userpref.c.o.d -o source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c:30:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[46/1922] Linking C static library lib\libbf_editor_metaball.a
+[47/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/userpref_ops.c.o
+[48/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_select.cc.o
+[49/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_relationships.cc.o
+ninja: build stopped: subcommand failed.
+
+
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:67)
+	at org.gradle.internal.UncheckedException.throwAsUncheckedException(UncheckedException.java:41)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:107)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:49)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:42)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:28)
+	at org.gradle.api.internal.AbstractTask$TaskActionWrapper.execute(AbstractTask.java:726)
+	at org.gradle.api.internal.AbstractTask$TaskActionWrapper.execute(AbstractTask.java:693)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter$3.run(ExecuteActionsTaskExecuter.java:569)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:395)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$RunnableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:387)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(DefaultBuildOperationExecutor.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:242)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:150)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.run(DefaultBuildOperationExecutor.java:84)
+	at org.gradle.internal.operations.DelegatingBuildOperationExecutor.run(DelegatingBuildOperationExecutor.java:31)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeAction(ExecuteActionsTaskExecuter.java:554)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeActions(ExecuteActionsTaskExecuter.java:537)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.access$300(ExecuteActionsTaskExecuter.java:108)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter$TaskExecution.executeWithPreviousOutputFiles(ExecuteActionsTaskExecuter.java:278)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter$TaskExecution.execute(ExecuteActionsTaskExecuter.java:267)
+	at org.gradle.internal.execution.steps.ExecuteStep.lambda$execute$1(ExecuteStep.java:33)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:33)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:26)
+	at org.gradle.internal.execution.steps.CleanupOutputsStep.execute(CleanupOutputsStep.java:67)
+	at org.gradle.internal.execution.steps.CleanupOutputsStep.execute(CleanupOutputsStep.java:36)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:34)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:43)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:73)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:54)
+	at org.gradle.internal.execution.steps.CatchExceptionStep.execute(CatchExceptionStep.java:34)
+	at org.gradle.internal.execution.steps.CreateOutputsStep.execute(CreateOutputsStep.java:44)
+	at org.gradle.internal.execution.steps.SnapshotOutputsStep.execute(SnapshotOutputsStep.java:54)
+	at org.gradle.internal.execution.steps.SnapshotOutputsStep.execute(SnapshotOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:49)
+	at org.gradle.internal.execution.steps.CacheStep.executeWithoutCache(CacheStep.java:159)
+	at org.gradle.internal.execution.steps.CacheStep.execute(CacheStep.java:72)
+	at org.gradle.internal.execution.steps.CacheStep.execute(CacheStep.java:43)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:44)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:33)
+	at org.gradle.internal.execution.steps.RecordOutputsStep.execute(RecordOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.RecordOutputsStep.execute(RecordOutputsStep.java:24)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:92)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$0(SkipUpToDateStep.java:85)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:55)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:76)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:36)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:26)
+	at org.gradle.internal.execution.steps.ResolveCachingStateStep.execute(ResolveCachingStateStep.java:94)
+	at org.gradle.internal.execution.steps.ResolveCachingStateStep.execute(ResolveCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.CaptureStateBeforeExecutionStep.execute(CaptureStateBeforeExecutionStep.java:79)
+	at org.gradle.internal.execution.steps.CaptureStateBeforeExecutionStep.execute(CaptureStateBeforeExecutionStep.java:53)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:74)
+	at org.gradle.internal.execution.steps.SkipEmptyWorkStep.lambda$execute$2(SkipEmptyWorkStep.java:78)
+	at org.gradle.internal.execution.steps.SkipEmptyWorkStep.execute(SkipEmptyWorkStep.java:78)
+	at org.gradle.internal.execution.steps.SkipEmptyWorkStep.execute(SkipEmptyWorkStep.java:34)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:39)
+	at org.gradle.internal.execution.steps.LoadExecutionStateStep.execute(LoadExecutionStateStep.java:40)
+	at org.gradle.internal.execution.steps.LoadExecutionStateStep.execute(LoadExecutionStateStep.java:28)
+	at org.gradle.internal.execution.impl.DefaultWorkExecutor.execute(DefaultWorkExecutor.java:33)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:194)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:186)
+	at org.gradle.api.internal.tasks.execution.CleanupStaleOutputsExecuter.execute(CleanupStaleOutputsExecuter.java:114)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:62)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:56)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$CallableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:409)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$CallableBuildOperationWorker.execute(DefaultBuildOperationExecutor.java:399)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor$1.execute(DefaultBuildOperationExecutor.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:242)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.execute(DefaultBuildOperationExecutor.java:150)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOperationExecutor.java:94)
+	at org.gradle.internal.operations.DelegatingBuildOperationExecutor.call(DelegatingBuildOperationExecutor.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:41)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:356)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:343)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:336)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:322)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.lambda$run$0(DefaultPlanExecutor.java:127)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:191)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.executeNextNode(DefaultPlanExecutor.java:182)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:124)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)
+	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)
+Caused by: Build command failed.
+Error while executing process C:\Android\android-sdk\cmake\3.10.2.4988404\bin\ninja.exe with arguments {-C D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a audaspace audaspace-py bf_avi bf_blenfont bf_blenlib bf_compositor_shaders bf_dna bf_dna_blenlib bf_draw_shaders bf_editor_datafiles bf_editor_lattice bf_editor_mask bf_editor_metaball bf_editor_space_script bf_editor_space_userpref bf_functions bf_gpu bf_gpu_shaders bf_ikplugin bf_imbuf_cineon bf_imbuf_openexr bf_imbuf_openimageio bf_intern_audaspace bf_intern_clog bf_intern_dualcon bf_intern_eigen bf_intern_ghost bf_intern_guardedalloc bf_intern_iksolver bf_intern_itasc bf_intern_libc_compat bf_intern_libmv bf_intern_locale bf_intern_mantaflow bf_intern_memutil bf_intern_opencolorio bf_intern_opensubdiv bf_intern_openvdb bf_intern_quadriflow bf_intern_rigidbody bf_intern_sky bf_nodes_function bf_ocio_shaders bf_python_ext bf_python_gpu cycles_bvh cycles_device cycles_graph cycles_integrator cycles_kernel cycles_scene cycles_session cycles_subd cycles_util extern_bullet extern_ceres extern_clew extern_curve_fit_nd extern_gflags extern_glog extern_lzma extern_mantaflow extern_minilzo extern_quadriflow extern_rangetree extern_wcwidth makesdna makesrna}
+ninja: Entering directory `D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a'
+[1/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/editmball_undo.c.o
+[2/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_edit.c.o
+[3/1922] Generating gpu_shader_display_transform_frag.glsl.c
+[4/1922] Generating gpu_shader_display_transform_vert.glsl.c
+[5/1922] Generating internal/evaluator/shaders/glsl_compute_kernel.glsl.c
+[6/1922] Generating ocio_shader_shared.hh.c
+[7/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/editlattice_undo.c.o
+[8/1922] Building C object source/blender/editors/lattice/CMakeFiles/bf_editor_lattice.dir/lattice_ops.c.o
+[9/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology_compare.cc.o
+[10/1922] Linking CXX static library lib\libextern_mantaflow.a
+[11/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/patch_map.cc.o
+[12/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_cache_impl.cc.o
+[13/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_draw.cc.o
+[14/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/ocio_shader_shared.hh.c.o
+[15/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_vert.glsl.c.o
+[16/1922] Building C object intern/opencolorio/CMakeFiles/bf_ocio_shaders.dir/gpu_shader_display_transform_frag.glsl.c.o
+[17/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/type_convert.cc.o
+[18/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/gl_compute_evaluator.cc.o
+[19/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_capi.cc.o
+[20/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/mesh_topology.cc.o
+[21/1922] Linking C static library lib\libbf_ocio_shaders.a
+[22/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_cpu.cc.o
+[23/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/opensubdiv_capi.cc.o
+[24/1922] Building C object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/shaders/glsl_compute_kernel.glsl.c.o
+[25/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/base/util.cc.o
+[26/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output.cc.o
+[27/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/evaluator_impl.cc.o
+[28/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl_compare.cc.o
+[29/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_impl.cc.o
+[30/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/evaluator/eval_output_gpu.cc.o
+[31/1922] Linking C static library lib\libbf_editor_lattice.a
+[32/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_editaction.cc.o
+[33/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_capi.cc.o
+[34/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_edit.cc.o
+[35/1922] Building CXX object intern/opensubdiv/CMakeFiles/bf_intern_opensubdiv.dir/internal/topology/topology_refiner_factory.cc.o
+[36/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_add.cc.o
+[37/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_ops.cc.o
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:665:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:890:9: warning: declaration does not declare anything [-Wmissing-declarations]
+        ATTR_FALLTHROUGH;
+        ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/mask/mask_ops.cc:1191:7: warning: declaration does not declare anything [-Wmissing-declarations]
+      ATTR_FALLTHROUGH; /* update CV position */
+      ^
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib\BLI_compiler_attrs.h:73:30: note: expanded from macro 'ATTR_FALLTHROUGH'
+#    define ATTR_FALLTHROUGH __attribute__((fallthrough))
+                             ^
+3 warnings generated.
+[38/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_shapekey.cc.o
+[39/1922] Linking CXX static library lib\libbf_intern_opensubdiv.a
+[40/1922] Building C object source/blender/editors/metaball/CMakeFiles/bf_editor_metaball.dir/mball_ops.c.o
+[41/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_query.cc.o
+[42/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_ops.c.o
+[43/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/script_edit.c.o
+[44/1922] Building C object source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o
+FAILED: source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_PYTHON -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/gpu -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/python -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o -MF source\blender\editors\space_script\CMakeFiles\bf_editor_space_script.dir\space_script.c.o.d -o source/blender/editors/space_script/CMakeFiles/bf_editor_space_script.dir/space_script.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_script/space_script.c:27:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[45/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o
+FAILED: source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o 
+C:\Android\android-sdk\ndk\21.4.7075529\toolchains\llvm\prebuilt\windows-x86_64\bin\clang.exe --target=aarch64-none-linux-android28 --gcc-toolchain=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Android/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot -DNDEBUG -DWITH_ASSERT_ABORT -DWITH_OPENGL -DWITH_SSE2NEON -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -D__LITTLE_ENDIAN__ -isystem D:/FreeProjects/Blender/Blender/lib-android_arm64/Embree/common/simd/arm -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/include -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenkernel -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenlib -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesrna -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/windowmanager -ID:/FreeProjects/Blender/Blender/Blender-android_arm64/intern/guardedalloc -Isource/blender/makesdna/intern -Wall -Werror=implicit-function-declaration -Werror=return-type -Wno-tautological-compare -Wno-unknown-pragmas -Wno-char-subscripts -Wstrict-prototypes -Wmissing-prototypes -Wunused-parameter -Werror=unguarded-availability-new -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu11 -pipe -fPIC -funsigned-char -fno-strict-aliasing -ffp-contract=off -O2 -DNDEBUG  -fPIC -MD -MT source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o -MF source\blender\editors\space_userpref\CMakeFiles\bf_editor_space_userpref.dir\space_userpref.c.o.d -o source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/space_userpref.c.o   -c D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c
+In file included from D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/editors/space_userpref/space_userpref.c:30:
+D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/blenloader\BLO_read_write.h:30:10: fatal error: 'dna_type_offsets.h' file not found
+#include "dna_type_offsets.h"
+         ^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+[46/1922] Linking C static library lib\libbf_editor_metaball.a
+[47/1922] Building C object source/blender/editors/space_userpref/CMakeFiles/bf_editor_space_userpref.dir/userpref_ops.c.o
+[48/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_select.cc.o
+[49/1922] Building CXX object source/blender/editors/mask/CMakeFiles/bf_editor_mask.dir/mask_relationships.cc.o
+ninja: build stopped: subcommand failed.
+
+
+	at com.android.build.gradle.internal.cxx.process.ProcessOutputJunction.execute(ProcessOutputJunction.kt:91)
+	at com.android.build.gradle.internal.cxx.process.ProcessOutputJunction.execute(ProcessOutputJunction.kt:132)
+	at com.android.build.gradle.tasks.ExternalNativeBuildTask.executeProcessBatch(ExternalNativeBuildTask.kt:458)
+	at com.android.build.gradle.tasks.ExternalNativeBuildTask.buildImpl(ExternalNativeBuildTask.kt:198)
+	at com.android.build.gradle.tasks.ExternalNativeBuildTask.doTaskAction(ExternalNativeBuildTask.kt:123)
+	at com.android.build.gradle.internal.tasks.UnsafeOutputsTask$taskAction$$inlined$recordTaskAction$1.invoke(AndroidVariantTask.kt:73)
+	at com.android.build.gradle.internal.tasks.UnsafeOutputsTask$taskAction$$inlined$recordTaskAction$1.invoke(AndroidVariantTask.kt:34)
+	at com.android.build.gradle.internal.tasks.Blocks.recordSpan(Blocks.java:91)
+	at com.android.build.gradle.internal.tasks.UnsafeOutputsTask.taskAction(UnsafeOutputsTask.kt:56)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:104)
+	... 91 more
+
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 7s
+2 actionable tasks: 2 executed
