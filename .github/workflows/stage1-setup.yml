@@ -255,26 +255,29 @@ jobs:
           }
           exit 0
 
-      - name: Replace broken ARM64 datatoc/datatoc_icon/msgfmt with prebuilt Windows-native versions, then retry build
+      - name: Replace broken ARM64/x86_64 datatoc/datatoc_icon/msgfmt with prebuilt Windows-native versions, then retry build
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
           $buildLogFile2 = "$env:RUNNER_TEMP\transcript\makeblender_build_retry.txt"
-          $binDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a\bin"
           $utilDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\Utilities"
 
           "---- host-tool fix: this Android port's CMake setup builds these" | Out-File $logFile -Append
-          "tools with the Android NDK cross-compiler, producing ARM64 binaries" | Out-File $logFile -Append
-          "Windows can't execute directly. Overwriting with the maintainer's" | Out-File $logFile -Append
-          "own prebuilt Windows-native versions from Utilities-android_arm64/Utilities/." | Out-File $logFile -Append
-          New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-          foreach ($exe in @("datatoc.exe", "datatoc_icon.exe", "msgfmt.exe")) {
-            $src = Join-Path $utilDir $exe
-            if (Test-Path $src) {
-              Copy-Item $src (Join-Path $binDir $exe) -Force
-              "copied: $exe" | Out-File $logFile -Append
-            } else {
-              "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
+          "tools with the Android NDK cross-compiler, producing ARM64/x86_64" | Out-File $logFile -Append
+          "binaries Windows can't execute directly. Overwriting with the" | Out-File $logFile -Append
+          "maintainer's own prebuilt Windows-native versions - for BOTH ABIs" | Out-File $logFile -Append
+          "this time, not just arm64-v8a like last attempt." | Out-File $logFile -Append
+          foreach ($abi in @("arm64-v8a", "x86_64")) {
+            $binDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\$abi\bin"
+            New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+            foreach ($exe in @("datatoc.exe", "datatoc_icon.exe", "msgfmt.exe")) {
+              $src = Join-Path $utilDir $exe
+              if (Test-Path $src) {
+                Copy-Item $src (Join-Path $binDir $exe) -Force
+                "copied ($abi): $exe" | Out-File $logFile -Append
+              } else {
+                "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
+              }
             }
           }
 
@@ -329,15 +332,18 @@ jobs:
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
           $buildRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
-          $required = @("libmakesdna.a","libmakesrna.a","libcycles_kernel.a","libbf_blenlib.a","libbf_intern_openvdb.a")
+          $required = @("libmakesdna.a","libmakesrna.a","libcycles_kernel.a","libbf_blenlib.a","libbf_intern_openvdb.a","libbf_gpu.a")
           $missing = @()
-          foreach ($lib in $required) {
-            $found = Get-ChildItem -Path $buildRoot -Recurse -Filter $lib -ErrorAction SilentlyContinue
-            if ($found) {
-              "FOUND $lib at: $($found[0].FullName)" | Tee-Object -FilePath $logFile -Append
-            } else {
-              "MISSING: $lib" | Tee-Object -FilePath $logFile -Append
-              $missing += $lib
+          foreach ($abi in @("arm64-v8a", "x86_64")) {
+            $abiDir = "$buildRoot\app\.cxx\cmake\release\$abi\lib"
+            foreach ($lib in $required) {
+              $path = Join-Path $abiDir $lib
+              if (Test-Path $path) {
+                "FOUND ($abi) $lib at: $path" | Tee-Object -FilePath $logFile -Append
+              } else {
+                "MISSING ($abi): $lib" | Tee-Object -FilePath $logFile -Append
+                $missing += "$abi/$lib"
+              }
             }
           }
           if ($missing.Count -eq 0) {
