@@ -1,0 +1,62 @@
+=== KVM availability ===
+crw-rw---- 1 root kvm 10, 232 Jul 21 04:18 /dev/kvm
+4
+=== disk space ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   59G   86G  41% /
+tmpfs           7.9G   84K  7.9G   1% /dev/shm
+tmpfs           3.2G 1012K  3.2G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+efivarfs        128M   32K  128M   1% /sys/firmware/efi/efivars
+/dev/sda16      881M   64M  756M   8% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs           1.6G   12K  1.6G   1% /run/user/1001
+=== memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       1.3Gi        10Gi        44Mi       4.4Gi        14Gi
+Swap:          3.0Gi          0B       3.0Gi
+=== full .android directory tree (unfiltered) ===
+find: ‘/home/runner/.android’: No such file or directory
+find: ‘/home/runner/.android’: No such file or directory
+=== ALL log files anywhere under home, no time filter ===
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/4a2fe1c1-a0e6-4530-96a6-4b9ef3482377_43bcedfb-68c6-4572-b62f-209ce8417f48_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/4a2fe1c1-a0e6-4530-96a6-4b9ef3482377_b22eab09-b0e3-4331-b782-b18cba5d22a0_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/pages/4a2fe1c1-a0e6-4530-96a6-4b9ef3482377_bf662c29-2c7f-5271-92e9-89c3c791ac47_1.log
+/home/runner/actions-runner/cached/2.335.1/_diag/Worker_20260721-042304-utc.log
+/home/runner/actions-runner/cached/2.335.1/_diag/Runner_20260721-042302-utc.log
+=== ANDROID_SDK_ROOT / ANDROID_HOME env ===
+ANDROID_SDK_ROOT=/usr/local/lib/android/sdk ANDROID_HOME=/usr/local/lib/android/sdk
+/usr/local/lib/android/sdk
+/usr/local/lib/android/sdk/licenses
+/usr/local/lib/android/sdk/licenses/android-sdk-license
+/usr/local/lib/android/sdk/platforms
+/usr/local/lib/android/sdk/platforms/android-35-ext15
+/usr/local/lib/android/sdk/platforms/android-36.1
+/usr/local/lib/android/sdk/platforms/android-37.1
+/usr/local/lib/android/sdk/platforms/android-36-ext19
+/usr/local/lib/android/sdk/platforms/android-36-ext18
+/usr/local/lib/android/sdk/platforms/android-34-ext10
+/usr/local/lib/android/sdk/platforms/android-34
+/usr/local/lib/android/sdk/platforms/android-34-ext12
+/usr/local/lib/android/sdk/platforms/android-35
+/usr/local/lib/android/sdk/platforms/android-34-ext8
+/usr/local/lib/android/sdk/platforms/android-35-ext14
+/usr/local/lib/android/sdk/platforms/android-37.0
+/usr/local/lib/android/sdk/platforms/android-34-ext11
+/usr/local/lib/android/sdk/platforms/android-36
+/usr/local/lib/android/sdk/cmake
+/usr/local/lib/android/sdk/cmake/3.31.5
+/usr/local/lib/android/sdk/cmake/4.1.2
+/usr/local/lib/android/sdk/ndk
+/usr/local/lib/android/sdk/ndk/29.0.14206865
+/usr/local/lib/android/sdk/ndk/27.3.13750724
+/usr/local/lib/android/sdk/ndk/28.2.13676358
+/usr/local/lib/android/sdk/platform-tools
+/usr/local/lib/android/sdk/platform-tools/mke2fs.conf
+/usr/local/lib/android/sdk/platform-tools/adb
+/usr/local/lib/android/sdk/platform-tools/hprof-conv
+/usr/local/lib/android/sdk/platform-tools/mke2fs
+=== any emulator or qemu process, running or zombie ===
+runner      2353  0.0  0.0   6132  1856 ?        S    04:23   0:00 tee /tmp/emulator_diagnosis.log
+=== dmesg tail (kvm/oom related) ===
+dmesg: read kernel buffer failed: Operation not permitted
