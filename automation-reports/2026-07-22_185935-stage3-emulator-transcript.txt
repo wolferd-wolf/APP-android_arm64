@@ -1,0 +1,4 @@
+=== emulator script starting: 2026-07-22T18:59:34+00:00 ===
+/home/runner/work/_temp/32a25b33-222c-4e33-b024-99a0b2d1999f.sh: line 4: adb: command not found
+=== MakeSRNA starting: 2026-07-22T18:59:34+00:00 ===
+/home/runner/work/_temp/53c446c6-a42d-4416-b3ce-4d43b4b790ed.sh: line 4: adb: command not found
