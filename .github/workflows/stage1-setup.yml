@@ -174,7 +174,7 @@ jobs:
           Copy-Item "$pngDir\scripts\pnglibconf.h.prebuilt" "$pngDir\pnglibconf.h"
           Write-Host "Copied pnglibconf.h.prebuilt -> pnglibconf.h"
 
-      - name: Restrict CMake build to exactly what MakeSDNA + MakeSRNA need (avoid Cycles-app/RNA-header-consuming code), and add x86_64 ABI for CI emulator use
+      - name: Restrict CMake build to exactly what MakeSDNA + MakeSRNA need (avoid Cycles-app/RNA-header-consuming code) - arm64-v8a only
         shell: pwsh
         run: |
           $gradlePath = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\build.gradle"
@@ -211,11 +211,7 @@ jobs:
           )
           $targetsLine = '                targets ' + (($targets | ForEach-Object { '"' + $_ + '"' }) -join ", ")
           foreach ($line in $lines) {
-            if ($line -match 'abiFilters\s*"arm64-v8a"') {
-              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
-            } else {
-              $out.Add($line)
-            }
+            $out.Add($line)
             if ($line -match 'cppFlags\s*""') {
               $out.Add($targetsLine)
             }
@@ -255,7 +251,7 @@ jobs:
           }
           exit 0
 
-      - name: Replace broken ARM64/x86_64 datatoc/datatoc_icon/msgfmt with prebuilt Windows-native versions, then retry build
+      - name: Replace broken ARM64 datatoc/datatoc_icon/msgfmt with prebuilt Windows-native versions, then retry build
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
@@ -263,21 +259,18 @@ jobs:
           $utilDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\Utilities"
 
           "---- host-tool fix: this Android port's CMake setup builds these" | Out-File $logFile -Append
-          "tools with the Android NDK cross-compiler, producing ARM64/x86_64" | Out-File $logFile -Append
-          "binaries Windows can't execute directly. Overwriting with the" | Out-File $logFile -Append
-          "maintainer's own prebuilt Windows-native versions - for BOTH ABIs" | Out-File $logFile -Append
-          "this time, not just arm64-v8a like last attempt." | Out-File $logFile -Append
-          foreach ($abi in @("arm64-v8a", "x86_64")) {
-            $binDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\$abi\bin"
-            New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-            foreach ($exe in @("datatoc.exe", "datatoc_icon.exe", "msgfmt.exe")) {
-              $src = Join-Path $utilDir $exe
-              if (Test-Path $src) {
-                Copy-Item $src (Join-Path $binDir $exe) -Force
-                "copied ($abi): $exe" | Out-File $logFile -Append
-              } else {
-                "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
-              }
+          "tools with the Android NDK cross-compiler, producing ARM64 binaries" | Out-File $logFile -Append
+          "Windows can't execute directly. Overwriting with the maintainer's" | Out-File $logFile -Append
+          "own prebuilt Windows-native versions (arm64-v8a only - the real target)." | Out-File $logFile -Append
+          $binDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a\bin"
+          New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+          foreach ($exe in @("datatoc.exe", "datatoc_icon.exe", "msgfmt.exe")) {
+            $src = Join-Path $utilDir $exe
+            if (Test-Path $src) {
+              Copy-Item $src (Join-Path $binDir $exe) -Force
+              "copied: $exe" | Out-File $logFile -Append
+            } else {
+              "MISSING from Utilities folder: $exe" | Out-File $logFile -Append
             }
           }
 
@@ -289,27 +282,20 @@ jobs:
           $srcDir = "D:\FreeProjects\Blender\Blender\APP-android_arm64\generated-dna"
           $androidBasePath = "/data/data/com.epai.makesdna/makesdna/"
           $windowsBasePath = "D:/FreeProjects/Blender/Blender/Blender-android_arm64/source/blender/makesdna/"
-          foreach ($abi in @("arm64-v8a", "x86_64")) {
-            $destDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\$abi\source\blender\makesdna\intern"
-            New-Item -ItemType Directory -Force -Path $destDir | Out-Null
-            foreach ($f in @("dna.c", "dna_type_offsets.h", "dna_verify.c")) {
-              $src = Join-Path $srcDir $f
-              if (Test-Path $src) {
-                $destPath = Join-Path $destDir $f
-                Copy-Item $src $destPath -Force
-                if ($f -eq "dna_verify.c") {
-                  # dna_verify.c was generated ON THE EMULATOR, and its own
-                  # #include lines have the on-device base_directory baked
-                  # in literally (makesdna.c writes base_directory straight
-                  # into the file it generates). That Android path means
-                  # nothing here - repoint it at the real Windows source dir.
-                  (Get-Content $destPath -Raw) -replace [regex]::Escape($androidBasePath), $windowsBasePath | Set-Content $destPath
-                  "patched dna_verify.c include paths: $androidBasePath -> $windowsBasePath" | Out-File $logFile -Append
-                }
-                "seeded $f into $destDir (post-configure, pre-retry)" | Out-File $logFile -Append
-              } else {
-                "MISSING from generated-dna/: $f" | Out-File $logFile -Append
+          $destDir = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender\app\.cxx\cmake\release\arm64-v8a\source\blender\makesdna\intern"
+          New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+          foreach ($f in @("dna.c", "dna_type_offsets.h", "dna_verify.c")) {
+            $src = Join-Path $srcDir $f
+            if (Test-Path $src) {
+              $destPath = Join-Path $destDir $f
+              Copy-Item $src $destPath -Force
+              if ($f -eq "dna_verify.c") {
+                (Get-Content $destPath -Raw) -replace [regex]::Escape($androidBasePath), $windowsBasePath | Set-Content $destPath
+                "patched dna_verify.c include paths: $androidBasePath -> $windowsBasePath" | Out-File $logFile -Append
               }
+              "seeded $f into $destDir (post-configure, pre-retry)" | Out-File $logFile -Append
+            } else {
+              "MISSING from generated-dna/: $f" | Out-File $logFile -Append
             }
           }
 
@@ -334,16 +320,14 @@ jobs:
           $buildRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeBlender"
           $required = @("libmakesdna.a","libmakesrna.a","libcycles_kernel.a","libbf_blenlib.a","libbf_intern_openvdb.a","libbf_gpu.a")
           $missing = @()
-          foreach ($abi in @("arm64-v8a", "x86_64")) {
-            $abiDir = "$buildRoot\app\.cxx\cmake\release\$abi\lib"
-            foreach ($lib in $required) {
-              $path = Join-Path $abiDir $lib
-              if (Test-Path $path) {
-                "FOUND ($abi) $lib at: $path" | Tee-Object -FilePath $logFile -Append
-              } else {
-                "MISSING ($abi): $lib" | Tee-Object -FilePath $logFile -Append
-                $missing += "$abi/$lib"
-              }
+          $abiDir = "$buildRoot\app\.cxx\cmake\release\arm64-v8a\lib"
+          foreach ($lib in $required) {
+            $path = Join-Path $abiDir $lib
+            if (Test-Path $path) {
+              "FOUND $lib at: $path" | Tee-Object -FilePath $logFile -Append
+            } else {
+              "MISSING: $lib" | Tee-Object -FilePath $logFile -Append
+              $missing += $lib
             }
           }
           if ($missing.Count -eq 0) {
@@ -363,34 +347,15 @@ jobs:
       # Building the DEBUG variant specifically - AGP makes debug builds
       # debuggable=true automatically, which lets us pull files out of its
       # private /data/data/ directory via `adb shell run-as` without root.
-      - name: Patch MakeSDNA for multi-ABI build (add x86_64, fix hardcoded arm64-v8a path in its CMakeLists.txt)
+      - name: Patch MakeSDNA CMakeLists.txt path (arm64-v8a only)
         if: always()
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
           $sdnaRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA"
-
-          # 1) add x86_64 ABI alongside the real arm64-v8a target
-          $gradlePath = "$sdnaRoot\app\build.gradle"
-          $lines = Get-Content $gradlePath
-          $out = New-Object System.Collections.Generic.List[string]
-          foreach ($line in $lines) {
-            if ($line -match 'abiFilters\s*"arm64-v8a"') {
-              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
-            } else {
-              $out.Add($line)
-            }
-          }
-          $out | Set-Content $gradlePath
-
-          # 2) MakeSDNA's CMakeLists.txt hardcodes the arm64-v8a path to
-          # libmakesdna.a - replace with ${ANDROID_ABI} so each ABI variant
-          # links against its own matching build of the library.
           $cmakePath = "$sdnaRoot\app\src\main\cpp\CMakeLists.txt"
           (Get-Content $cmakePath -Raw) -replace 'release/arm64-v8a/lib', 'release/${ANDROID_ABI}/lib' | Set-Content $cmakePath
-
-          "---- patched MakeSDNA build.gradle + CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
-          Get-Content $gradlePath | Select-String "abiFilters" | Tee-Object -FilePath $logFile -Append
+          "---- patched MakeSDNA CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
           Get-Content $cmakePath | Select-String "blenderLibLibDir" | Tee-Object -FilePath $logFile -Append
 
       - name: Build MakeSDNA app (debug variant)
@@ -422,30 +387,15 @@ jobs:
           if-no-files-found: warn
 
       # ================= STAGE 3 (part 1b) - same pattern, MakeSRNA =================
-      - name: Patch MakeSRNA for multi-ABI build (add x86_64, fix hardcoded arm64-v8a path in its CMakeLists.txt)
+      - name: Patch MakeSRNA CMakeLists.txt path (arm64-v8a only)
         if: always()
         shell: pwsh
         run: |
           $logFile = "$env:RUNNER_TEMP\transcript\raw.txt"
           $srnaRoot = "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA"
-
-          $gradlePath = "$srnaRoot\app\build.gradle"
-          $lines = Get-Content $gradlePath
-          $out = New-Object System.Collections.Generic.List[string]
-          foreach ($line in $lines) {
-            if ($line -match 'abiFilters\s*"arm64-v8a"') {
-              $out.Add('                abiFilters "arm64-v8a", "x86_64"')
-            } else {
-              $out.Add($line)
-            }
-          }
-          $out | Set-Content $gradlePath
-
           $cmakePath = "$srnaRoot\app\src\main\cpp\CMakeLists.txt"
           (Get-Content $cmakePath -Raw) -replace 'release/arm64-v8a/lib', 'release/${ANDROID_ABI}/lib' | Set-Content $cmakePath
-
-          "---- patched MakeSRNA build.gradle + CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
-          Get-Content $gradlePath | Select-String "abiFilters" | Tee-Object -FilePath $logFile -Append
+          "---- patched MakeSRNA CMakeLists.txt ----" | Tee-Object -FilePath $logFile -Append
           Get-Content $cmakePath | Select-String "blenderLibLibDir" | Tee-Object -FilePath $logFile -Append
 
       - name: Build MakeSRNA app (debug variant)
@@ -590,7 +540,7 @@ jobs:
   # the "setup" job above - not the full repo checkout or D: path trick.
   run-makesdna-on-device:
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: write
     steps:
@@ -625,7 +575,7 @@ jobs:
             mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
             SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
             yes | $SDKM --licenses > /dev/null 2>&1 || true
-            $SDKM --install "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;x86_64"
+            $SDKM --install "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;arm64-v8a"
             echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
             echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
             echo "ANDROID_AVD_HOME=$HOME/.android/avd" >> "$GITHUB_ENV"
@@ -647,7 +597,7 @@ jobs:
         run: |
           {
             echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT ANDROID_AVD_HOME=$ANDROID_AVD_HOME"
-            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-30;google_apis;x86_64" -d pixel_5 --force
+            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-30;google_apis;arm64-v8a" -d pixel_5 --force
             echo "---- verifying AVD actually exists now ----"
             emulator -list-avds
             ls -la "$ANDROID_AVD_HOME"
