@@ -1,0 +1,16 @@
+=== emulator script starting: 2026-08-15T12:51:38+00:00 ===
+List of devices attached
+emulator-5554	unauthorized
+
+adb: device unauthorized.
+This adb server's $ADB_VENDOR_KEYS is not set
+Try 'adb kill-server' if that seems wrong.
+Otherwise check for a confirmation dialog on your device.
+=== MakeSRNA starting: 2026-08-15T12:51:38+00:00 ===
+List of devices attached
+emulator-5554	unauthorized
+
+adb: device unauthorized.
+This adb server's $ADB_VENDOR_KEYS is not set
+Try 'adb kill-server' if that seems wrong.
+Otherwise check for a confirmation dialog on your device.

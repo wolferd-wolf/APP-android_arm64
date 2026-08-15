@@ -1,0 +1,139 @@
+=== KVM availability ===
+crw-rw-rw- 1 root kvm 10, 232 Aug 15 12:49 /dev/kvm
+4
+=== disk space ===
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       145G   65G   80G  45% /
+tmpfs           7.9G     0  7.9G   0% /dev/shm
+tmpfs           3.2G 1008K  3.2G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+efivarfs        128M   32K  128M   1% /sys/firmware/efi/efivars
+/dev/sda16      881M   64M  756M   8% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs           1.6G   28K  1.6G   1% /run/user/1001
+=== memory ===
+               total        used        free      shared  buff/cache   available
+Mem:            15Gi       4.4Gi       1.5Gi        48Mi        10Gi        11Gi
+Swap:          3.0Gi          0B       3.0Gi
+=== full .android directory tree (unfiltered) ===
+/home/runner/.android
+/home/runner/.android/adb.5037
+/home/runner/.android/emu-update-last-check.ini
+/home/runner/.android/adbkey.pub
+/home/runner/.android/userid
+/home/runner/.android/avd
+/home/runner/.android/avd/test_avd.avd
+/home/runner/.android/avd/test_avd.avd/userdata-qemu.img
+/home/runner/.android/avd/test_avd.avd/emu-launch-params.txt
+/home/runner/.android/avd/test_avd.avd/encryptionkey.img
+/home/runner/.android/avd/test_avd.avd/hardware-qemu.ini
+/home/runner/.android/avd/test_avd.avd/hardware-qemu.ini.lock
+/home/runner/.android/avd/test_avd.avd/userdata.img
+/home/runner/.android/avd/test_avd.avd/config.ini
+/home/runner/.android/avd/test_avd.avd/cache.img.qcow2
+/home/runner/.android/avd/test_avd.avd/tmpAdbCmds
+/home/runner/.android/avd/test_avd.avd/initrd
+/home/runner/.android/avd/test_avd.avd/cache.img
+/home/runner/.android/avd/test_avd.avd/qemu-version.txt
+/home/runner/.android/avd/test_avd.avd/bootcompleted.ini
+/home/runner/.android/avd/test_avd.avd/modem_simulator
+/home/runner/.android/avd/test_avd.avd/modem_simulator/iccprofile_for_sim0.xml
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc/modem_simulator
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc/modem_simulator/files
+/home/runner/.android/avd/test_avd.avd/modem_simulator/iccprofile_for_carrierapitests.xml
+/home/runner/.android/avd/test_avd.avd/modem_simulator/modem_nvram.json
+/home/runner/.android/avd/test_avd.avd/netsim.ini
+/home/runner/.android/avd/test_avd.avd/userdata-qemu.img.qcow2
+/home/runner/.android/avd/test_avd.avd/multiinstance.lock
+/home/runner/.android/avd/test_avd.avd/version_num.cache
+/home/runner/.android/avd/test_avd.avd/read-snapshot.txt
+/home/runner/.android/avd/test_avd.avd/encryptionkey.img.qcow2
+/home/runner/.android/avd/test_avd.ini
+/home/runner/.android/emu-last-feature-flags.protobuf
+/home/runner/.android/adbkey
+/home/runner/.android/modem-nv-ram-5554
+/home/runner/.android
+/home/runner/.android/adb.5037
+/home/runner/.android/emu-update-last-check.ini
+/home/runner/.android/adbkey.pub
+/home/runner/.android/userid
+/home/runner/.android/avd
+/home/runner/.android/avd/test_avd.avd
+/home/runner/.android/avd/test_avd.avd/userdata-qemu.img
+/home/runner/.android/avd/test_avd.avd/emu-launch-params.txt
+/home/runner/.android/avd/test_avd.avd/encryptionkey.img
+/home/runner/.android/avd/test_avd.avd/hardware-qemu.ini
+/home/runner/.android/avd/test_avd.avd/hardware-qemu.ini.lock
+/home/runner/.android/avd/test_avd.avd/userdata.img
+/home/runner/.android/avd/test_avd.avd/config.ini
+/home/runner/.android/avd/test_avd.avd/cache.img.qcow2
+/home/runner/.android/avd/test_avd.avd/tmpAdbCmds
+/home/runner/.android/avd/test_avd.avd/initrd
+/home/runner/.android/avd/test_avd.avd/cache.img
+/home/runner/.android/avd/test_avd.avd/qemu-version.txt
+/home/runner/.android/avd/test_avd.avd/bootcompleted.ini
+/home/runner/.android/avd/test_avd.avd/modem_simulator
+/home/runner/.android/avd/test_avd.avd/modem_simulator/iccprofile_for_sim0.xml
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc/modem_simulator
+/home/runner/.android/avd/test_avd.avd/modem_simulator/etc/modem_simulator/files
+/home/runner/.android/avd/test_avd.avd/modem_simulator/iccprofile_for_carrierapitests.xml
+/home/runner/.android/avd/test_avd.avd/modem_simulator/modem_nvram.json
+/home/runner/.android/avd/test_avd.avd/netsim.ini
+/home/runner/.android/avd/test_avd.avd/userdata-qemu.img.qcow2
+/home/runner/.android/avd/test_avd.avd/multiinstance.lock
+/home/runner/.android/avd/test_avd.avd/version_num.cache
+/home/runner/.android/avd/test_avd.avd/read-snapshot.txt
+/home/runner/.android/avd/test_avd.avd/encryptionkey.img.qcow2
+/home/runner/.android/avd/test_avd.ini
+/home/runner/.android/emu-last-feature-flags.protobuf
+/home/runner/.android/adbkey
+/home/runner/.android/modem-nv-ram-5554
+=== ALL log files anywhere under home, no time filter ===
+/home/runner/actions-runner/cached/2.336.0/_diag/pages/c7183648-0c30-4d3b-a52a-b19d96b90982_ca70c33e-7187-50a4-ac77-aefe3baa46a3_1.log
+/home/runner/actions-runner/cached/2.336.0/_diag/pages/c7183648-0c30-4d3b-a52a-b19d96b90982_e5edc2d7-eafa-4756-946f-4c70509cd7ad_1.log
+/home/runner/actions-runner/cached/2.336.0/_diag/pages/c7183648-0c30-4d3b-a52a-b19d96b90982_7e61c985-50d7-4a95-b33e-fb91d846a528_1.log
+/home/runner/actions-runner/cached/2.336.0/_diag/pages/c7183648-0c30-4d3b-a52a-b19d96b90982_d789b948-2fa1-41cb-afc2-1146634d7c29_1.log
+/home/runner/actions-runner/cached/2.336.0/_diag/pages/c7183648-0c30-4d3b-a52a-b19d96b90982_67ce1c09-7165-47d5-aa38-3bfc28b21164_1.log
+/home/runner/actions-runner/cached/2.336.0/_diag/Worker_20260815-124804-utc.log
+/home/runner/actions-runner/cached/2.336.0/_diag/Runner_20260815-124800-utc.log
+=== ANDROID_SDK_ROOT / ANDROID_HOME env ===
+ANDROID_SDK_ROOT=/home/runner/android-sdk ANDROID_HOME=/home/runner/android-sdk
+/home/runner/android-sdk
+/home/runner/android-sdk/platforms
+/home/runner/android-sdk/platforms/android-34
+/home/runner/android-sdk/.knownPackages
+/home/runner/android-sdk/emulator
+/home/runner/android-sdk/emulator/source.properties
+/home/runner/android-sdk/emulator/bin64
+/home/runner/android-sdk/emulator/crashreport
+/home/runner/android-sdk/emulator/emulator-check
+/home/runner/android-sdk/emulator/emulator
+/home/runner/android-sdk/emulator/qsn
+/home/runner/android-sdk/emulator/netsimd
+/home/runner/android-sdk/emulator/qemu-img
+/home/runner/android-sdk/emulator/lib64
+/home/runner/android-sdk/emulator/resources
+/home/runner/android-sdk/emulator/package.xml
+/home/runner/android-sdk/emulator/nimble_bridge
+/home/runner/android-sdk/emulator/NOTICE.csv
+/home/runner/android-sdk/emulator/NOTICE.txt
+/home/runner/android-sdk/emulator/LICENSE
+/home/runner/android-sdk/emulator/mksdcard
+/home/runner/android-sdk/emulator/crashpad_handler
+/home/runner/android-sdk/emulator/qemu
+/home/runner/android-sdk/emulator/include
+/home/runner/android-sdk/emulator/lib
+/home/runner/android-sdk/system-images
+/home/runner/android-sdk/system-images/android-34
+/home/runner/android-sdk/.temp
+/home/runner/android-sdk/cmdline-tools
+/home/runner/android-sdk/cmdline-tools/latest
+=== any emulator or qemu process, running or zombie ===
+runner      2607  239 22.0 6355244 3614908 ?     Sl   12:49   4:48 /home/runner/android-sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64-headless -avd test_avd -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -camera-back none -no-snapshot
+runner      2620  0.0  0.0 173044  4344 ?        Sl   12:49   0:00 /home/runner/android-sdk/emulator/crashpad_handler --no-rate-limit --database=/tmp/android-runner/emu-crash-37.1.11.db --url=https://clients2.google.com/cr/report --annotation=prod=AndroidEmulator --annotation=ver=37.1.11-15917651 --initial-client-fd=4 --shared-client-connection
+runner      2700 11.7  0.2 1882260 39056 ?       Sl   12:49   0:14 /home/runner/android-sdk/emulator/netsimd --host-dns=127.0.0.53
+runner      3259  0.0  0.0   6132  1856 ?        S    12:51   0:00 tee /tmp/emulator_diagnosis.log
+=== dmesg tail (kvm/oom related) ===
+dmesg: read kernel buffer failed: Operation not permitted
