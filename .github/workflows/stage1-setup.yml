@@ -545,14 +545,25 @@ jobs:
   # runners - this isn't a permissions bug, GH's Actions ARM64 runners have
   # no nested-virt support (unlike their x86_64 runners, which do, per
   # GH's Apr 2024 "Hardware accelerated Android virtualization" changelog).
-  # Switching to ubuntu-latest (x86_64, real documented KVM support) and a
-  # google_apis_playstore x86_64 system image, which ships libndk_translation
-  # so our arm64-v8a MakeSDNA/MakeSRNA APKs (native code, built arm64-v8a-only
-  # per the earlier x86_64-revert decision) can still execute - just as
-  # translated ARM code inside an accelerated x86_64 guest, not as native
-  # code on a native arm64 guest. This is a real tradeoff (translation layer
-  # can have edge-case gaps for complex JNI code) but it's the only path to
-  # working hardware acceleration in GH-hosted CI right now.
+  # Switched to ubuntu-latest (x86_64, real documented KVM support).
+  #
+  # First attempt used a google_apis_playstore x86_64 system image (ships
+  # libndk_translation, so the arm64-v8a-only MakeSDNA/MakeSRNA APKs would
+  # still run as translated code). Confirmed via run 31889433794 this was a
+  # dead end: Play Store images are production-signed builds, and
+  # `adb root` is unconditionally refused on production builds
+  # ("adbd cannot run as root in production builds") - this pipeline
+  # requires root to pull generated files from /data/data (run-as was
+  # already ruled out earlier for refusing world-writable dirs). Root
+  # access and ARM translation are mutually exclusive on Play Store x86_64
+  # images, so instead: plain google_apis (non-Play-Store, userdebug,
+  # root-capable) arm64-v8a system image - real ISA match, no translation
+  # layer, root works. KVM can't accelerate a mismatched guest arch anyway,
+  # so this and the translated-x86_64 approach were never going to differ
+  # in acceleration; this way at least avoids translation-layer risk for a
+  # correctness-sensitive DNA/RNA generation tool. Cost: boot runs under
+  # unaccelerated software TCG emulation, so it's slow (timeouts bumped
+  # accordingly below).
   run-makesdna-on-device:
     needs: setup
     runs-on: ubuntu-latest
@@ -593,7 +604,7 @@ jobs:
             java -version
             yes | $SDKM --licenses > /dev/null 2>&1 || true
             install_rc=0
-            $SDKM --install "platform-tools" "emulator" "platforms;android-34" "system-images;android-34;google_apis_playstore;x86_64" || install_rc=$?
+            $SDKM --install "platform-tools" "emulator" "platforms;android-34" "system-images;android-34;google_apis;arm64-v8a" || install_rc=$?
             echo "sdkmanager --install exit code: $install_rc"
             echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
             echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
@@ -620,7 +631,7 @@ jobs:
         run: |
           {
             echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT ANDROID_AVD_HOME=$ANDROID_AVD_HOME"
-            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-34;google_apis_playstore;x86_64" -d pixel_5 --force
+            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-34;google_apis;arm64-v8a" -d pixel_5 --force
             echo "---- verifying AVD actually exists now ----"
             emulator -list-avds
             ls -la "$ANDROID_AVD_HOME"
@@ -646,18 +657,24 @@ jobs:
           nohup emulator -avd test_avd -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -camera-back none -no-snapshot > /tmp/dna_output/emulator_boot.log 2>&1 &
           echo "emulator launched with PID $!"
           echo "---- waiting for device to appear (adb wait-for-device) ----"
-          timeout 120 adb wait-for-device
+          # NOTE: KVM cannot accelerate an arm64-v8a guest on an x86_64 host
+          # (host/guest ISA mismatch) - this now boots under pure software
+          # TCG emulation, which is much slower than the accelerated case
+          # the old 5-6min timeout budget below was tuned for. Bumped both
+          # generously; would rather wait too long once than get a false
+          # "still booting" failure and burn another full CI cycle on it.
+          timeout 300 adb wait-for-device
           echo "adb wait-for-device exit code: $?"
           echo "---- polling for full boot completion (sys.boot_completed) ----"
-          for i in $(seq 1 60); do
+          for i in $(seq 1 90); do
             state=$(adb get-state 2>&1)
             booted=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r\n')
             echo "  poll $i: adb-state=[$state] sys.boot_completed=[$booted]"
             if [ "$booted" = "1" ]; then
-              echo "Boot completed after ~$((i*5)) seconds"
+              echo "Boot completed after ~$((i*10)) seconds"
               break
             fi
-            sleep 5
+            sleep 10
           done
           adb devices
         continue-on-error: true
