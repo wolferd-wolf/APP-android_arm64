@@ -376,6 +376,17 @@ jobs:
           } else {
             "NO APK FOUND - build likely failed, check transcript above" | Tee-Object -FilePath $logFile -Append
           }
+          # 2026-08-15: also grab the standalone makesdna_cli executable
+          # (added to CMakeLists.txt) - this is what job2 actually runs now
+          # via qemu-user-static, the APK/emulator path was a dead end.
+          $cli = Get-ChildItem -Path "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSDNA" -Recurse -Filter "makesdna_cli" -ErrorAction SilentlyContinue
+          if ($cli) {
+            "FOUND makesdna_cli:" | Tee-Object -FilePath $logFile -Append
+            $cli | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
+            Copy-Item $cli[0].FullName "$env:GITHUB_WORKSPACE\makesdna_cli"
+          } else {
+            "NO makesdna_cli FOUND - executable target may not have built, check transcript above" | Tee-Object -FilePath $logFile -Append
+          }
           exit 0
 
       - name: Upload MakeSDNA APK for the emulator job
@@ -384,6 +395,14 @@ jobs:
         with:
           name: makesdna-debug-apk
           path: makesdna-debug.apk
+          if-no-files-found: warn
+
+      - name: Upload makesdna_cli executable
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: makesdna-cli
+          path: makesdna_cli
           if-no-files-found: warn
 
       # ================= STAGE 3 (part 1b) - same pattern, MakeSRNA =================
@@ -416,6 +435,14 @@ jobs:
           } else {
             "NO APK FOUND - build likely failed, check transcript above" | Tee-Object -FilePath $logFile -Append
           }
+          $cli = Get-ChildItem -Path "D:\FreeProjects\Blender\Blender\Utilities-android_arm64\MakeSRNA" -Recurse -Filter "makesrna_cli" -ErrorAction SilentlyContinue
+          if ($cli) {
+            "FOUND makesrna_cli:" | Tee-Object -FilePath $logFile -Append
+            $cli | ForEach-Object { "  $($_.FullName)" | Tee-Object -FilePath $logFile -Append }
+            Copy-Item $cli[0].FullName "$env:GITHUB_WORKSPACE\makesrna_cli"
+          } else {
+            "NO makesrna_cli FOUND - executable target may not have built, check transcript above" | Tee-Object -FilePath $logFile -Append
+          }
           exit 0
 
       - name: Upload MakeSRNA APK for the emulator job
@@ -424,6 +451,14 @@ jobs:
         with:
           name: makesrna-debug-apk
           path: makesrna-debug.apk
+          if-no-files-found: warn
+
+      - name: Upload makesrna_cli executable
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: makesrna-cli
+          path: makesrna_cli
           if-no-files-found: warn
       # raw transcript alongside it, then commit both straight back into
       # the repo. This is the part that matters: Claude cannot fetch
@@ -534,36 +569,41 @@ jobs:
           path: FreeProjects/Blender/Blender/APP-android_arm64/automation-reports/*
 
   # ================= STAGE 3 (part 2) =================
-  # This job runs on Linux specifically because GitHub's hosted Linux
-  # runners have hardware-accelerated (KVM) Android emulator support, which
-  # windows-latest does not reliably have. It only needs the APK built by
-  # the "setup" job above - not the full repo checkout or D: path trick.
+  # 2026-08-15 HISTORY (kept for context, this job no longer boots an
+  # Android emulator at all):
+  #   1. ubuntu-24.04-arm (native arm64 host, arm64-v8a system image) -
+  #      GH-hosted ARM64 runners have no /dev/kvm at all, confirmed via
+  #      run 29947094708's diagnosis log. Not a perms bug, no nested-virt
+  #      support on GH's ARM64 runners at all (unlike x86_64).
+  #   2. ubuntu-latest + google_apis_playstore x86_64 (ARM translation via
+  #      libndk_translation, so the arm64-v8a APKs would still run) -
+  #      confirmed dead via run 31889433794: Play Store images are
+  #      production-signed builds, `adb root` is unconditionally refused
+  #      ("adbd cannot run as root in production builds"), and this
+  #      pipeline needs root to pull generated files (run-as was already
+  #      ruled out for refusing world-writable dirs).
+  #   3. ubuntu-latest + plain google_apis (non-Play-Store) arm64-v8a image
+  #      - confirmed dead via run 31896172841: the current QEMU2-based
+  #      Android emulator flatly refuses to boot a mismatched guest arch
+  #      at all ("Avd's CPU Architecture 'arm64' is not supported by the
+  #      QEMU2 emulator on x86_64 host"). Not slow, not a perms issue -
+  #      a hard refusal. There is no combination of GH-hosted runner +
+  #      system image that gives both a real arm64-v8a guest AND hardware
+  #      acceleration AND root access.
   #
-  # 2026-08-15 CHANGE: was ubuntu-24.04-arm (native arm64 host, arm64-v8a
-  # system image). Confirmed via /tmp/emulator_diagnosis.log on run
-  # 29947094708 that /dev/kvm does not exist at all on GH-hosted ARM64
-  # runners - this isn't a permissions bug, GH's Actions ARM64 runners have
-  # no nested-virt support (unlike their x86_64 runners, which do, per
-  # GH's Apr 2024 "Hardware accelerated Android virtualization" changelog).
-  # Switched to ubuntu-latest (x86_64, real documented KVM support).
-  #
-  # First attempt used a google_apis_playstore x86_64 system image (ships
-  # libndk_translation, so the arm64-v8a-only MakeSDNA/MakeSRNA APKs would
-  # still run as translated code). Confirmed via run 31889433794 this was a
-  # dead end: Play Store images are production-signed builds, and
-  # `adb root` is unconditionally refused on production builds
-  # ("adbd cannot run as root in production builds") - this pipeline
-  # requires root to pull generated files from /data/data (run-as was
-  # already ruled out earlier for refusing world-writable dirs). Root
-  # access and ARM translation are mutually exclusive on Play Store x86_64
-  # images, so instead: plain google_apis (non-Play-Store, userdebug,
-  # root-capable) arm64-v8a system image - real ISA match, no translation
-  # layer, root works. KVM can't accelerate a mismatched guest arch anyway,
-  # so this and the translated-x86_64 approach were never going to differ
-  # in acceleration; this way at least avoids translation-layer risk for a
-  # correctness-sensitive DNA/RNA generation tool. Cost: boot runs under
-  # unaccelerated software TCG emulation, so it's slow (timeouts bumped
-  # accordingly below).
+  # Root cause of all three: the whole Android-app/emulator wrapper was
+  # never actually necessary. native-lib.cpp in both MakeSDNA and MakeSRNA
+  # is a trivial JNI shim around a plain C main() that already lives
+  # inside libmakesdna.a/the RNA static libs (these ARE Blender's own
+  # standalone makesdna/makesrna CLI tools - Blender runs the exact same
+  # step as a normal host executable during every regular desktop build).
+  # Added standalone `makesdna_cli`/`makesrna_cli` executable targets to
+  # both apps' CMakeLists.txt (Utilities-android_arm64), statically linked
+  # so there's no bionic dynamic-linker/sysroot to satisfy at runtime.
+  # This job now just downloads those two arm64-v8a static executables and
+  # runs them directly under qemu-user-static (user-mode CPU emulation,
+  # not a full-machine/OS emulator - no boot, no KVM, no root needed, no
+  # ABI-translation risk since the binary is genuinely arm64 end to end).
   run-makesdna-on-device:
     needs: setup
     runs-on: ubuntu-latest
@@ -580,141 +620,53 @@ jobs:
           ref: blender-v3.6-release
           path: blender-src
 
-      - name: Download MakeSDNA APK from setup job
+      - name: Download makesdna_cli executable from setup job
         uses: actions/download-artifact@v4
         with:
-          name: makesdna-debug-apk
+          name: makesdna-cli
 
-      - name: Download MakeSRNA APK from setup job
+      - name: Download makesrna_cli executable from setup job
         uses: actions/download-artifact@v4
         with:
-          name: makesrna-debug-apk
+          name: makesrna-cli
 
-      - name: Install Android SDK components (emulator, platform-tools, system image)
+      - name: Make executables runnable, sanity-check they're really static arm64
         run: |
-          {
-            export ANDROID_HOME="$HOME/android-sdk"
-            mkdir -p "$ANDROID_HOME/cmdline-tools"
-            cd /tmp
-            curl -sS -o cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip -q cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
-            mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
-            SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-            echo "---- java -version ----"
-            java -version
-            yes | $SDKM --licenses > /dev/null 2>&1 || true
-            install_rc=0
-            $SDKM --install "platform-tools" "emulator" "platforms;android-34" "system-images;android-34;google_apis;arm64-v8a" || install_rc=$?
-            echo "sdkmanager --install exit code: $install_rc"
-            echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
-            echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
-            echo "ANDROID_AVD_HOME=$HOME/.android/avd" >> "$GITHUB_ENV"
-            mkdir -p "$HOME/.android/avd"
-            echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
-            echo "$ANDROID_HOME/emulator" >> "$GITHUB_PATH"
-            echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
-          } 2>&1 | tee /tmp/sdk_install.log
+          chmod +x makesdna_cli makesrna_cli
+          echo "=== file(1) ==="
+          file makesdna_cli makesrna_cli
+          echo "=== readelf interpreter check (should print nothing / no INTERP for a static binary) ==="
+          readelf -l makesdna_cli 2>&1 | grep -i "interp" || echo "(no INTERP segment - good, fully static)"
+          readelf -l makesrna_cli 2>&1 | grep -i "interp" || echo "(no INTERP segment - good, fully static)"
 
-      - name: Ensure KVM is accessible (GH-documented udev rule, not just chmod)
+      - name: Install qemu-user-static
         run: |
-          {
-            echo "---- before ----"
-            ls -la /dev/kvm || echo "/dev/kvm missing"
-            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-            sudo udevadm control --reload-rules
-            sudo udevadm trigger --name-match=kvm
-            echo "---- after ----"
-            ls -la /dev/kvm || echo "/dev/kvm still missing"
-          } 2>&1 | tee /tmp/kvm_setup.log
+          sudo apt-get update -qq
+          sudo apt-get install -y qemu-user-static
+          qemu-aarch64-static --version
 
-      - name: Create AVD
-        run: |
-          {
-            echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT ANDROID_AVD_HOME=$ANDROID_AVD_HOME"
-            echo "no" | avdmanager create avd -n test_avd -k "system-images;android-34;google_apis;arm64-v8a" -d pixel_5 --force
-            echo "---- verifying AVD actually exists now ----"
-            emulator -list-avds
-            ls -la "$ANDROID_AVD_HOME"
-          } 2>&1 | tee -a /tmp/sdk_install.log
-
-      - name: Boot emulator manually with full output capture (not using the composite action - its internal logs aren't readable by Claude)
-        run: |
-          mkdir -p /tmp/dna_output
-          # google_apis_playstore images are production-like and enforce the
-          # adb RSA authorization dialog (unlike plain google_apis/userdebug
-          # images, which auto-authorize). Nobody can click "Always allow" in
-          # headless CI, so instead: make sure an adb keypair exists, then
-          # tell both the adb client AND the emulator (which reads this same
-          # var on first boot to pre-seed the guest's trusted-keys list)
-          # where it lives, BEFORE the emulator process starts.
-          adb start-server
-          ls -la "$HOME/.android/adbkey" "$HOME/.android/adbkey.pub"
-          echo "ADB_VENDOR_KEYS=$HOME/.android/adbkey" >> "$GITHUB_ENV"
-          export ADB_VENDOR_KEYS="$HOME/.android/adbkey"
-          # Launch directly, redirecting ALL output (this is the part that
-          # was invisible before) to a file on disk that I control and can
-          # read after the fact via the repo commit.
-          nohup emulator -avd test_avd -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -camera-back none -no-snapshot > /tmp/dna_output/emulator_boot.log 2>&1 &
-          echo "emulator launched with PID $!"
-          echo "---- waiting for device to appear (adb wait-for-device) ----"
-          # NOTE: KVM cannot accelerate an arm64-v8a guest on an x86_64 host
-          # (host/guest ISA mismatch) - this now boots under pure software
-          # TCG emulation, which is much slower than the accelerated case
-          # the old 5-6min timeout budget below was tuned for. Bumped both
-          # generously; would rather wait too long once than get a false
-          # "still booting" failure and burn another full CI cycle on it.
-          timeout 300 adb wait-for-device
-          echo "adb wait-for-device exit code: $?"
-          echo "---- polling for full boot completion (sys.boot_completed) ----"
-          for i in $(seq 1 90); do
-            state=$(adb get-state 2>&1)
-            booted=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r\n')
-            echo "  poll $i: adb-state=[$state] sys.boot_completed=[$booted]"
-            if [ "$booted" = "1" ]; then
-              echo "Boot completed after ~$((i*10)) seconds"
-              break
-            fi
-            sleep 10
-          done
-          adb devices
-        continue-on-error: true
-
-      - name: Run MakeSDNA on the emulator and pull generated DNA files
-        id: run_emulator
+      - name: Run makesdna_cli under qemu-user-static and pull generated DNA files
+        id: run_makesdna
         continue-on-error: true
         run: |
           mkdir -p /tmp/dna_output
-          exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
-          echo "=== emulator script starting: $(date -u -Iseconds) ==="
-          adb devices
-          timeout 60 adb install -r makesdna-debug.apk
-          echo "install exit code: $?"
-          # IMPORTANT: makesdna's main() reads its INPUT (the DNA_*.h type
-          # headers) from a base_directory passed as an argv, hardcoded in
-          # native-lib.cpp to /data/data/com.epai.makesdna/makesdna/. That
-          # folder needs to actually contain those headers before we launch
-          # the app, or generation silently fails on missing input files.
-          # This needs root (adb root) since the app hasn't run yet and the
-          # directory doesn't exist as the app's own writable area yet.
-          timeout 30 adb root
-          echo "adb root exit code: $?"
-          sleep 2
-          timeout 30 adb shell mkdir -p /data/data/com.epai.makesdna/makesdna
-          timeout 60 adb push blender-src/source/blender/makesdna/. /data/data/com.epai.makesdna/makesdna/
-          echo "adb push exit code: $?"
-          echo "---- pushed input headers, verifying ----"
-          adb shell ls /data/data/com.epai.makesdna/makesdna | head -5
-          echo "---- installed, launching MainActivity ----"
-          timeout 30 adb shell am start -n com.epai.makesdna/.MainActivity
-          echo "am start exit code: $?"
-          echo "---- waiting for native code to run ----"
-          sleep 10
-          echo "---- checking logcat for crashes ----"
-          adb logcat -d -t 300 | grep -i "epai\|makesdna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
-          echo "---- pulling generated files directly as root (run-as refuses world-writable dirs, which chmod 777 created - so skip run-as entirely since we're already root) ----"
-          adb exec-out cat /data/data/com.epai.makesdna/dna.c > /tmp/dna_output/dna.c || echo "PULL_FAILED: dna.c"
-          adb exec-out cat /data/data/com.epai.makesdna/dna_type_offsets.h > /tmp/dna_output/dna_type_offsets.h || echo "PULL_FAILED: dna_type_offsets.h"
-          adb exec-out cat /data/data/com.epai.makesdna/dna_verify.c > /tmp/dna_output/dna_verify.c || echo "PULL_FAILED: dna_verify.c"
+          exec > >(tee -a /tmp/dna_output/qemu_transcript.log) 2>&1
+          echo "=== makesdna_cli starting: $(date -u -Iseconds) ==="
+          # Mirrors the args native-lib.cpp used to hardcode for the JNI
+          # path, just with local paths instead of /data/data/... - makesdna
+          # reads its INPUT (the DNA_*.h type headers + everything else
+          # under makesdna/) from the last argv, and writes the three
+          # output files to the first three.
+          mkdir -p /tmp/dna_input
+          cp -r blender-src/source/blender/makesdna/. /tmp/dna_input/
+          echo "---- input staged, verifying ----"
+          ls /tmp/dna_input | head -5
+          timeout 120 qemu-aarch64-static ./makesdna_cli makesdna \
+            /tmp/dna_output/dna.c \
+            /tmp/dna_output/dna_type_offsets.h \
+            /tmp/dna_output/dna_verify.c \
+            /tmp/dna_input/
+          echo "makesdna_cli exit code: $?"
           echo "---- results ----"
           ls -la /tmp/dna_output/
           for f in dna.c dna_type_offsets.h dna_verify.c; do
@@ -722,59 +674,46 @@ jobs:
             head -20 "/tmp/dna_output/$f" 2>/dev/null || echo "(missing or empty)"
           done
 
-      - name: Run MakeSRNA on the emulator and pull generated RNA files
-        id: run_srna_emulator
+      - name: Run makesrna_cli under qemu-user-static and pull generated RNA files
+        id: run_makesrna
         continue-on-error: true
         run: |
           mkdir -p /tmp/dna_output/rna_output
-          exec > >(tee -a /tmp/dna_output/emulator_transcript.log) 2>&1
-          echo "=== MakeSRNA starting: $(date -u -Iseconds) ==="
-          adb devices
-          timeout 60 adb install -r makesrna-debug.apk
-          echo "install exit code: $?"
-          # Unlike makesdna, makesrna's main()/rna_preprocess() only takes
-          # OUTPUT directory args - no input headers need pushing, since all
-          # of RNA's actual definition source is compiled directly into the
-          # static lib at build time on the Windows runner, not read at
-          # runtime. So: just launch and pull.
-          timeout 30 adb shell am start -n com.epai.makesrna/.MainActivity
-          echo "am start exit code: $?"
-          echo "---- waiting for native code to run (this does a LOT more work than makesdna did) ----"
-          sleep 20
-          echo "---- checking logcat for crashes ----"
-          adb logcat -d -t 300 | grep -i "epai\|makesrna\|AndroidRuntime\|FATAL" || echo "(nothing matched in logcat)"
-          echo "---- pulling entire output directory (many files expected, exact names unknown ahead of time) ----"
-          adb pull /data/data/com.epai.makesrna/ /tmp/dna_output/rna_output/ || echo "PULL_FAILED: whole directory pull"
+          exec > >(tee -a /tmp/dna_output/qemu_transcript.log) 2>&1
+          echo "=== makesrna_cli starting: $(date -u -Iseconds) ==="
+          # Unlike makesdna, makesrna's main() only takes OUTPUT directory
+          # args (all three identical, matching what native-lib.cpp used to
+          # hardcode) - no input headers needed, RNA's definition source is
+          # compiled directly into the static lib at build time.
+          timeout 180 qemu-aarch64-static ./makesrna_cli \
+            /tmp/dna_output/rna_output/ \
+            /tmp/dna_output/rna_output/ \
+            /tmp/dna_output/rna_output/
+          echo "makesrna_cli exit code: $?"
           echo "---- results ----"
           find /tmp/dna_output/rna_output -type f | wc -l
           find /tmp/dna_output/rna_output -type f | head -30
           echo "---- specifically checking for RNA_blender_cpp.h (the file that blocked the full blender build earlier) ----"
           find /tmp/dna_output/rna_output -iname "RNA_blender_cpp.h" -exec echo "FOUND: {}" \; -exec wc -l {} \;
 
-      - name: Diagnose emulator boot (runs regardless - the emulator seems to be failing before my script even starts)
+      - name: Diagnose qemu-user run (runs regardless)
         if: always()
         run: |
           {
-            echo "=== KVM availability ==="
-            ls -la /dev/kvm 2>&1 || echo "/dev/kvm does not exist"
-            egrep -c '(vmx|svm)' /proc/cpuinfo || echo "no virtualization CPU flags found"
+            echo "=== qemu-aarch64-static version ==="
+            qemu-aarch64-static --version 2>&1 || echo "not installed / not on PATH"
+            echo "=== executable info ==="
+            file makesdna_cli makesrna_cli 2>&1
+            ls -la makesdna_cli makesrna_cli 2>&1
             echo "=== disk space ==="
             df -h
             echo "=== memory ==="
             free -h
-            echo "=== full .android directory tree (unfiltered) ==="
-            find ~/.android -maxdepth 6 2>&1 | head -100
-            find /home/runner/.android -maxdepth 6 2>&1 | head -100
-            echo "=== ALL log files anywhere under home, no time filter ==="
-            find /home/runner -iname "*.log" 2>/dev/null | head -40
-            echo "=== ANDROID_SDK_ROOT / ANDROID_HOME env ==="
-            echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT ANDROID_HOME=$ANDROID_HOME"
-            find "$ANDROID_SDK_ROOT" -maxdepth 2 2>&1 | head -30
-            echo "=== any emulator or qemu process, running or zombie ==="
-            ps aux | grep -i "emulator\|qemu" | grep -v grep
-            echo "=== dmesg tail (kvm/oom related) ==="
+            echo "=== /tmp/dna_output tree ==="
+            find /tmp/dna_output -maxdepth 3 2>&1
+            echo "=== dmesg tail (oom-kill etc) ==="
             dmesg 2>&1 | tail -60
-          } | tee /tmp/emulator_diagnosis.log
+          } | tee /tmp/qemu_diagnosis.log
         continue-on-error: true
 
       - name: Write stage 3 report and commit generated files
@@ -782,20 +721,11 @@ jobs:
         run: |
           mkdir -p automation-reports generated-dna
           stamp=$(date -u +"%Y-%m-%d_%H%M%S")
-          if [ -f /tmp/sdk_install.log ]; then
-            cp /tmp/sdk_install.log "automation-reports/${stamp}-stage3-sdk-install.txt"
+          if [ -f /tmp/dna_output/qemu_transcript.log ]; then
+            cp /tmp/dna_output/qemu_transcript.log "automation-reports/${stamp}-stage3-qemu-transcript.txt"
           fi
-          if [ -f /tmp/kvm_setup.log ]; then
-            cp /tmp/kvm_setup.log "automation-reports/${stamp}-stage3-kvm-setup.txt"
-          fi
-          if [ -f /tmp/dna_output/emulator_boot.log ]; then
-            cp /tmp/dna_output/emulator_boot.log "automation-reports/${stamp}-stage3-emulator-boot.txt"
-          fi
-          if [ -f /tmp/dna_output/emulator_transcript.log ]; then
-            cp /tmp/dna_output/emulator_transcript.log "automation-reports/${stamp}-stage3-emulator-transcript.txt"
-          fi
-          if [ -f /tmp/emulator_diagnosis.log ]; then
-            cp /tmp/emulator_diagnosis.log "automation-reports/${stamp}-stage3-emulator-diagnosis.txt"
+          if [ -f /tmp/qemu_diagnosis.log ]; then
+            cp /tmp/qemu_diagnosis.log "automation-reports/${stamp}-stage3-qemu-diagnosis.txt"
           fi
           : > /tmp/stage3_summary.txt
           for f in dna.c dna_type_offsets.h dna_verify.c; do
@@ -829,8 +759,8 @@ jobs:
             echo "# Stage 3 report - $stamp"
             echo ""
             echo "Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            echo "MakeSDNA emulator step conclusion: ${{ steps.run_emulator.outcome }}"
-            echo "MakeSRNA emulator step conclusion: ${{ steps.run_srna_emulator.outcome }}"
+            echo "makesdna_cli step conclusion: ${{ steps.run_makesdna.outcome }}"
+            echo "makesrna_cli step conclusion: ${{ steps.run_makesrna.outcome }}"
             echo ""
             echo "## On-device DNA generation result"
             cat /tmp/stage3_summary.txt
