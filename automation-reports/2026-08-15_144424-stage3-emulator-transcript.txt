@@ -1,0 +1,28 @@
+=== emulator script starting: 2026-08-15T14:43:55+00:00 ===
+List of devices attached
+emulator-5554	device
+
+Performing Streamed Install
+Success
+install exit code: 0
+adbd cannot run as root in production builds
+adb root exit code: 0
+mkdir: '/data/data/com.epai.makesdna/makesdna': Permission denied
+=== MakeSRNA starting: 2026-08-15T14:44:01+00:00 ===
+List of devices attached
+emulator-5554	device
+
+Performing Streamed Install
+Success
+install exit code: 0
+Starting: Intent { cmp=com.epai.makesrna/.MainActivity }
+am start exit code: 0
+---- waiting for native code to run (this does a LOT more work than makesdna did) ----
+---- checking logcat for crashes ----
+(nothing matched in logcat)
+---- pulling entire output directory (many files expected, exact names unknown ahead of time) ----
+adb: error: failed to stat remote object '/data/data/com.epai.makesrna/': Permission denied
+PULL_FAILED: whole directory pull
+---- results ----
+0
+---- specifically checking for RNA_blender_cpp.h (the file that blocked the full blender build earlier) ----
