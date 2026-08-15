@@ -629,6 +629,17 @@ jobs:
       - name: Boot emulator manually with full output capture (not using the composite action - its internal logs aren't readable by Claude)
         run: |
           mkdir -p /tmp/dna_output
+          # google_apis_playstore images are production-like and enforce the
+          # adb RSA authorization dialog (unlike plain google_apis/userdebug
+          # images, which auto-authorize). Nobody can click "Always allow" in
+          # headless CI, so instead: make sure an adb keypair exists, then
+          # tell both the adb client AND the emulator (which reads this same
+          # var on first boot to pre-seed the guest's trusted-keys list)
+          # where it lives, BEFORE the emulator process starts.
+          adb start-server
+          ls -la "$HOME/.android/adbkey" "$HOME/.android/adbkey.pub"
+          echo "ADB_VENDOR_KEYS=$HOME/.android/adbkey" >> "$GITHUB_ENV"
+          export ADB_VENDOR_KEYS="$HOME/.android/adbkey"
           # Launch directly, redirecting ALL output (this is the part that
           # was invisible before) to a file on disk that I control and can
           # read after the fact via the repo commit.
@@ -639,8 +650,9 @@ jobs:
           echo "adb wait-for-device exit code: $?"
           echo "---- polling for full boot completion (sys.boot_completed) ----"
           for i in $(seq 1 60); do
+            state=$(adb get-state 2>&1)
             booted=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r\n')
-            echo "  poll $i: sys.boot_completed=[$booted]"
+            echo "  poll $i: adb-state=[$state] sys.boot_completed=[$booted]"
             if [ "$booted" = "1" ]; then
               echo "Boot completed after ~$((i*5)) seconds"
               break
