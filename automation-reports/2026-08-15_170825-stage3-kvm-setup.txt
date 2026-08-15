@@ -1,0 +1,5 @@
+---- before ----
+crw-rw---- 1 root kvm 10, 232 Aug 15 17:01 /dev/kvm
+KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"
+---- after ----
+crw-rw-rw- 1 root kvm 10, 232 Aug 15 17:03 /dev/kvm
