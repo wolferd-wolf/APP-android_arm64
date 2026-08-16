@@ -652,16 +652,21 @@ jobs:
           mkdir -p /tmp/dna_output
           exec > >(tee -a /tmp/dna_output/qemu_transcript.log) 2>&1
           echo "=== makesdna_cli starting: $(date -u -Iseconds) ==="
-          # Mirrors the args native-lib.cpp used to hardcode for the JNI
-          # path, just with local paths instead of /data/data/... - makesdna
-          # reads its INPUT (the DNA_*.h type headers + everything else
-          # under makesdna/) from the last argv, and writes the three
-          # output files to the first three.
+          # 2026-08-16: verified directly against makesdna.c's real main()
+          # - if (!ELEM(argc, 4, 5)) { print usage } - so argv[1..3] are
+          # dna.c/offsets.h/dna_verify.c and argv[4] is an optional base
+          # directory. Confirmed via run 31938142432: an earlier version of
+          # this call had a stray leading "makesdna" token (leftover
+          # reasoning from the old JNI shim, which built argv manually and
+          # so needed its own argv[0] - irrelevant here since qemu's exec
+          # already supplies real argv[0]), which shifted argc to 6 and
+          # made makesdna_cli print its usage banner and exit instead of
+          # running.
           mkdir -p /tmp/dna_input
           cp -r blender-src/source/blender/makesdna/. /tmp/dna_input/
           echo "---- input staged, verifying ----"
           ls /tmp/dna_input | head -5
-          timeout 120 qemu-aarch64-static ./makesdna_cli makesdna \
+          timeout 120 qemu-aarch64-static ./makesdna_cli \
             /tmp/dna_output/dna.c \
             /tmp/dna_output/dna_type_offsets.h \
             /tmp/dna_output/dna_verify.c \
