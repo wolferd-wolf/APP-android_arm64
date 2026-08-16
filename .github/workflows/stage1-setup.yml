@@ -635,7 +635,7 @@ jobs:
           chmod +x makesdna_cli makesrna_cli
           echo "=== file(1) ==="
           file makesdna_cli makesrna_cli
-          echo "=== readelf interpreter check (should print nothing / no INTERP for a static binary) ==="
+          echo "=== readelf interpreter check (should print nothing / no INTERP for a static binary - if this DOES print an interp, the -static link flag silently didn't take and the qemu run below will fail needing a real Android device) ==="
           readelf -l makesdna_cli 2>&1 | grep -i "interp" || echo "(no INTERP segment - good, fully static)"
           readelf -l makesrna_cli 2>&1 | grep -i "interp" || echo "(no INTERP segment - good, fully static)"
 
