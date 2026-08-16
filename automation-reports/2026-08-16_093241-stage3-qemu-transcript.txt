@@ -1,0 +1,45 @@
+=== makesdna_cli starting: 2026-08-16T09:32:38+00:00 ===
+---- input staged, verifying ----
+CMakeLists.txt
+DNA_ID.h
+DNA_ID_enums.h
+DNA_action_types.h
+DNA_anim_types.h
+Usage: ./makesdna_cli dna.c dna_struct_offsets.h [base directory]
+=== makesrna_cli starting: 2026-08-16T09:32:38+00:00 ===
+makesrna_cli exit code: 0
+---- results ----
+77
+/tmp/dna_output/rna_output/rna_dynamicpaint_gen.c
+/tmp/dna_output/rna_output/rna_boid_gen.c
+/tmp/dna_output/rna_output/rna_userdef_gen.c
+/tmp/dna_output/rna_output/rna_lightprobe_gen.c
+/tmp/dna_output/rna_output/rna_rna_gen.c
+/tmp/dna_output/rna_output/rna_depsgraph_gen.c
+/tmp/dna_output/rna_output/rna_cloth_gen.c
+/tmp/dna_output/rna_output/rna_world_gen.c
+/tmp/dna_output/rna_output/rna_layer_gen.c
+/tmp/dna_output/rna_output/rna_curves_gen.c
+/tmp/dna_output/rna_output/rna_rigidbody_gen.c
+/tmp/dna_output/rna_output/rna_curveprofile_gen.c
+/tmp/dna_output/rna_output/rna_prototypes_gen.h
+/tmp/dna_output/rna_output/rna_light_gen.c
+/tmp/dna_output/rna_output/rna_animation_gen.c
+/tmp/dna_output/rna_output/rna_screen_gen.c
+/tmp/dna_output/rna_output/rna_packedfile_gen.c
+/tmp/dna_output/rna_output/rna_color_gen.c
+/tmp/dna_output/rna_output/rna_attribute_gen.c
+/tmp/dna_output/rna_output/RNA_prototypes.h
+/tmp/dna_output/rna_output/rna_wm_gen.c
+/tmp/dna_output/rna_output/rna_material_gen.c
+/tmp/dna_output/rna_output/rna_object_gen.c
+/tmp/dna_output/rna_output/rna_xr_gen.c
+/tmp/dna_output/rna_output/rna_action_gen.c
+/tmp/dna_output/rna_output/rna_render_gen.c
+/tmp/dna_output/rna_output/rna_text_gen.c
+/tmp/dna_output/rna_output/rna_sculpt_paint_gen.c
+/tmp/dna_output/rna_output/rna_nodetree_gen.c
+/tmp/dna_output/rna_output/rna_armature_gen.c
+---- specifically checking for RNA_blender_cpp.h (the file that blocked the full blender build earlier) ----
+FOUND: /tmp/dna_output/rna_output/RNA_blender_cpp.h
+73056 /tmp/dna_output/rna_output/RNA_blender_cpp.h
