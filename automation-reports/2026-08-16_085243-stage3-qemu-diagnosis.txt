@@ -1,0 +1,8 @@
+=== qemu-aarch64-static version ===
+/home/runner/work/_temp/5a6c8e02-f68f-4d4c-b4ec-13a5957776f2.sh: line 3: qemu-aarch64-static: command not found
+not installed / not on PATH
+=== executable info ===
+makesdna_cli: cannot open `makesdna_cli' (No such file or directory)
+makesrna_cli: cannot open `makesrna_cli' (No such file or directory)
+ls: cannot access 'makesdna_cli': No such file or directory
+ls: cannot access 'makesrna_cli': No such file or directory
