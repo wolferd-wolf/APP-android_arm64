@@ -1,0 +1,116 @@
+=== makesdna_cli starting: 2026-08-16T10:38:16+00:00 ===
+---- input staged, verifying ----
+CMakeLists.txt
+DNA_ID.h
+DNA_ID_enums.h
+DNA_action_types.h
+DNA_anim_types.h
+makesdna_cli exit code: 0
+---- results ----
+total 1552
+drwxr-xr-x  2 runner runner    4096 Aug 16 10:38 .
+drwxrwxrwt 15 root   root     12288 Aug 16 10:38 ..
+-rw-r--r--  1 runner runner  509208 Aug 16 10:38 dna.c
+-rw-r--r--  1 runner runner   29981 Aug 16 10:38 dna_type_offsets.h
+-rw-r--r--  1 runner runner 1022412 Aug 16 10:38 dna_verify.c
+-rw-r--r--  1 runner runner     210 Aug 16 10:38 qemu_transcript.log
+=== dna.c (first 20 lines) ===
+extern const unsigned char DNAstr[];
+const unsigned char __attribute__((aligned(4))) DNAstr[] = {
+83, 68, 78, 65, 78, 65, 77, 69, 168, 19, 0, 0, 42, 102, 105, 114, 115, 116, 0, 42, 
+108, 97, 115, 116, 0, 42, 100, 101, 115, 99, 114, 105, 112, 116, 105, 111, 110, 0, 114, 110, 
+97, 95, 115, 117, 98, 116, 121, 112, 101, 0, 95, 112, 97, 100, 91, 52, 93, 0, 98, 97, 
+115, 101, 0, 42, 100, 101, 102, 97, 117, 108, 116, 95, 97, 114, 114, 97, 121, 0, 100, 101, 
+102, 97, 117, 108, 116, 95, 97, 114, 114, 97, 121, 95, 108, 101, 110, 0, 109, 105, 110, 0, 
+109, 97, 120, 0, 115, 111, 102, 116, 95, 109, 105, 110, 0, 115, 111, 102, 116, 95, 109, 97, 
+120, 0, 115, 116, 101, 112, 0, 100, 101, 102, 97, 117, 108, 116, 95, 118, 97, 108, 117, 101, 
+0, 95, 112, 97, 100, 91, 51, 93, 0, 112, 114, 101, 99, 105, 115, 105, 111, 110, 0, 42, 
+100, 101, 102, 97, 117, 108, 116, 95, 118, 97, 108, 117, 101, 0, 105, 100, 95, 116, 121, 112, 
+101, 0, 95, 112, 97, 100, 91, 54, 93, 0, 42, 112, 111, 105, 110, 116, 101, 114, 0, 103, 
+114, 111, 117, 112, 0, 118, 97, 108, 0, 118, 97, 108, 50, 0, 42, 110, 101, 120, 116, 0, 
+42, 112, 114, 101, 118, 0, 116, 121, 112, 101, 0, 115, 117, 98, 116, 121, 112, 101, 0, 102, 
+108, 97, 103, 0, 110, 97, 109, 101, 91, 54, 52, 93, 0, 95, 112, 97, 100, 48, 91, 52, 
+93, 0, 100, 97, 116, 97, 0, 108, 101, 110, 0, 116, 111, 116, 97, 108, 108, 101, 110, 0, 
+42, 117, 105, 95, 100, 97, 116, 97, 0, 111, 112, 101, 114, 97, 116, 105, 111, 110, 0, 116, 
+97, 103, 0, 95, 112, 97, 100, 48, 91, 50, 93, 0, 42, 115, 117, 98, 105, 116, 101, 109, 
+95, 114, 101, 102, 101, 114, 101, 110, 99, 101, 95, 110, 97, 109, 101, 0, 42, 115, 117, 98, 
+105, 116, 101, 109, 95, 108, 111, 99, 97, 108, 95, 110, 97, 109, 101, 0, 115, 117, 98, 105, 
+=== dna_type_offsets.h (first 20 lines) ===
+#pragma once
+#define SDNA_TYPE_FROM_STRUCT(id) _SDNA_TYPE_##id
+enum {
+	_SDNA_TYPE_DrawDataList = 0,
+	_SDNA_TYPE_IDPropertyUIData = 1,
+	_SDNA_TYPE_IDPropertyUIDataInt = 2,
+	_SDNA_TYPE_IDPropertyUIDataBool = 3,
+	_SDNA_TYPE_IDPropertyUIDataFloat = 4,
+	_SDNA_TYPE_IDPropertyUIDataString = 5,
+	_SDNA_TYPE_IDPropertyUIDataID = 6,
+	_SDNA_TYPE_IDPropertyData = 7,
+	_SDNA_TYPE_IDProperty = 8,
+	_SDNA_TYPE_IDOverrideLibraryPropertyOperation = 9,
+	_SDNA_TYPE_IDOverrideLibraryProperty = 10,
+	_SDNA_TYPE_IDOverrideLibrary = 11,
+	_SDNA_TYPE_ID_Runtime_Remap = 12,
+	_SDNA_TYPE_ID_Runtime = 13,
+	_SDNA_TYPE_ID = 14,
+	_SDNA_TYPE_Library_Runtime = 15,
+	_SDNA_TYPE_Library = 16,
+=== dna_verify.c (first 20 lines) ===
+/* Verify struct sizes and member offsets are as expected by DNA. */
+#include "BLI_assert.h"
+
+#define DNA_DEPRECATED_ALLOW
+#define assert_line_ assert_line_DNA_
+#include "/tmp/dna_input/DNA_ID.h"
+#include "/tmp/dna_input/DNA_ID_enums.h"
+#include "/tmp/dna_input/DNA_action_types.h"
+#include "/tmp/dna_input/DNA_anim_types.h"
+#include "/tmp/dna_input/DNA_armature_types.h"
+#include "/tmp/dna_input/DNA_asset_types.h"
+#include "/tmp/dna_input/DNA_boid_types.h"
+#include "/tmp/dna_input/DNA_brush_enums.h"
+#include "/tmp/dna_input/DNA_brush_types.h"
+#include "/tmp/dna_input/DNA_cachefile_types.h"
+#include "/tmp/dna_input/DNA_camera_types.h"
+#include "/tmp/dna_input/DNA_cloth_types.h"
+#include "/tmp/dna_input/DNA_collection_types.h"
+#include "/tmp/dna_input/DNA_color_types.h"
+#include "/tmp/dna_input/DNA_constraint_types.h"
+=== makesrna_cli starting: 2026-08-16T10:38:17+00:00 ===
+makesrna_cli exit code: 0
+---- results ----
+77
+/tmp/dna_output/rna_output/rna_dynamicpaint_gen.c
+/tmp/dna_output/rna_output/rna_boid_gen.c
+/tmp/dna_output/rna_output/rna_userdef_gen.c
+/tmp/dna_output/rna_output/rna_lightprobe_gen.c
+/tmp/dna_output/rna_output/rna_rna_gen.c
+/tmp/dna_output/rna_output/rna_depsgraph_gen.c
+/tmp/dna_output/rna_output/rna_cloth_gen.c
+/tmp/dna_output/rna_output/rna_world_gen.c
+/tmp/dna_output/rna_output/rna_layer_gen.c
+/tmp/dna_output/rna_output/rna_curves_gen.c
+/tmp/dna_output/rna_output/rna_rigidbody_gen.c
+/tmp/dna_output/rna_output/rna_curveprofile_gen.c
+/tmp/dna_output/rna_output/rna_prototypes_gen.h
+/tmp/dna_output/rna_output/rna_light_gen.c
+/tmp/dna_output/rna_output/rna_animation_gen.c
+/tmp/dna_output/rna_output/rna_screen_gen.c
+/tmp/dna_output/rna_output/rna_packedfile_gen.c
+/tmp/dna_output/rna_output/rna_color_gen.c
+/tmp/dna_output/rna_output/rna_attribute_gen.c
+/tmp/dna_output/rna_output/RNA_prototypes.h
+/tmp/dna_output/rna_output/rna_wm_gen.c
+/tmp/dna_output/rna_output/rna_material_gen.c
+/tmp/dna_output/rna_output/rna_object_gen.c
+/tmp/dna_output/rna_output/rna_xr_gen.c
+/tmp/dna_output/rna_output/rna_action_gen.c
+/tmp/dna_output/rna_output/rna_render_gen.c
+/tmp/dna_output/rna_output/rna_text_gen.c
+/tmp/dna_output/rna_output/rna_sculpt_paint_gen.c
+/tmp/dna_output/rna_output/rna_nodetree_gen.c
+/tmp/dna_output/rna_output/rna_armature_gen.c
+---- specifically checking for RNA_blender_cpp.h (the file that blocked the full blender build earlier) ----
+FOUND: /tmp/dna_output/rna_output/RNA_blender_cpp.h
+73056 /tmp/dna_output/rna_output/RNA_blender_cpp.h
